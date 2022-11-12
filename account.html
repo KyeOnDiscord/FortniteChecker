@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script defer src="https://unpkg.com/@popperjs/core@2"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <title>Pro Swapper Skin Checker</title>
+    </head>
+
+    <style>
+        /* ===== Scrollbar CSS ===== */
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #5d5d5d #ffffff;
+        }
+
+        /* Chrome, Edge, and Safari */
+        *::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #5d5d5d;
+            border-radius: 16px;
+        }
+    </style>
+    <script>
+
+
+
+
+        function timeDifference(current, previous) {
+            var diff = current - previous;
+            return Math.round(diff / 86400, 0) + " day(s) ago";
+        }
+
+
+        function unixTime(unixtime) {
+
+            var u = new Date(unixtime * 1000);
+
+            return u.getUTCFullYear() +
+                '-' + ('0' + u.getUTCMonth()).slice(-2) +
+                '-' + ('0' + u.getUTCDate()).slice(-2)
+        };
+
+        let CosmeticType = "Skins"
+
+        function GetCosmetic() {
+            //Create array of skins
+            switch (CosmeticType) {
+                case "Skins":
+                    var skins = [];
+                    { skins }
+                    return skins;
+                case "Backblings":
+                    var skins = [];
+                    { backblings }
+                    return skins;
+                case "Pickaxes":
+                    var skins = [];
+                    { pickaxes }
+                    return skins;
+                case "Emotes":
+                    var skins = [];
+                    { emotes }
+                    return skins;
+                case "Gliders":
+                    var skins = [];
+                    { gliders }
+                    return skins;
+            }
+
+        }
+
+        function CreateSkinCards() {
+            var SkinList = GetCosmetic();
+            SkinList.forEach(skin => {
+                data = skin.split("|");
+                document.getElementById("skins").innerHTML += CreateCard(data[0], data[1], data[2]);
+
+            })
+        }
+
+        function CreateCard(skinName, skinIcon, Introduced) {
+            return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=\"${skinIcon}\" style="width:50%;height:auto" class=\"card-img-top\">  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("Hello World!");
+
+
+            CreateSkinCards();
+            const creationTime = { CREATION_TIMESTAMP };
+            document.getElementById("timestamp").innerText = timeDifference(Date.now() / 1000, creationTime);
+            document.getElementById("timestamp").setAttribute(`data-bs-title`, `${unixTime(creationTime)}`);
+
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+
+        function UpdatePage(type) {
+            CosmeticType = type;
+            document.getElementById("skins").innerHTML = "";
+            document.getElementById("Skins").setAttribute("class", "nav-link");
+            document.getElementById("Backblings").setAttribute("class", "nav-link");
+            document.getElementById("Pickaxes").setAttribute("class", "nav-link");
+            document.getElementById("Emotes").setAttribute("class", "nav-link");
+            document.getElementById("Gliders").setAttribute("class", "nav-link");
+
+
+            document.getElementById(type).setAttribute("class", "nav-link active");
+            CreateSkinCards();
+        }
+
+    </script>
+
+    <body style="margin:10px;background-color:#333">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Pro Swapper Skin Checker</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a id="Skins" class="nav-link active" aria-current="page" onclick="UpdatePage('Skins')">Skins</a>
+                        <a id="Backblings" class="nav-link" onclick="UpdatePage('Backblings')">Backblings</a>
+                        <a id="Pickaxes" class="nav-link" onclick="UpdatePage('Pickaxes')">Pickaxes</a>
+                        <a id="Emotes" class="nav-link" onclick="UpdatePage('Emotes')">Emotes</a>
+                        <a id="Gliders" class="nav-link" onclick="UpdatePage('Gliders')">Gliders</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <span class="text-white">This file was generated <span id="timestamp" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="a">0 day(s)</span> any changes to this account after this date are not shown here.</span><br>
+
+
+        <h2 class="text-white">Account Info:</h2>
+        <span class="text-white">ID: {EpicID}</span><br>
+        <span class="text-white">Display Name: {DisplayName}</span><br>
+        <div id="skins" class="container-fluid text-center row row-cols-sm-6 row-cols-sm-6 g-2">
+
+        </div>
+
+    </body>
+
+</html>
