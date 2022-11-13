@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-namespace FortniteChecker
+﻿namespace FortniteChecker
 {
-    internal class CosmeticsDB
+    internal sealed class CosmeticsDB
     {
 
-        public class Rootobject
+        public class CosmeticsDBRoot
         {
             public int status { get; set; }
             public Datum[] data { get; set; }
@@ -17,7 +11,6 @@ namespace FortniteChecker
 
         public class Datum
         {
-            public JToken jToken { get; set; }//The account's skin itself, can hold information like variants
             public string id { get; set; }
             public string name { get; set; }
             public string description { get; set; }

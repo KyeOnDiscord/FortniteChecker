@@ -2,7 +2,7 @@
 
 namespace FortniteChecker
 {
-    internal class AuthClient
+    internal sealed class AuthClient
     {
         public AuthClient(string ClientID, string Secret)
         {
