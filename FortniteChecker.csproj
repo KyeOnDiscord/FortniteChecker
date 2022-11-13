@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 	  <None Update="account.html">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="br.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

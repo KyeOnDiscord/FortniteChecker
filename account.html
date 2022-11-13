@@ -87,8 +87,8 @@
             })
         }
 
-        function CreateCard(skinName, skinIcon, Introduced) {
-            return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=\"${skinIcon}\" style="width:50%;height:auto" class=\"card-img-top\">  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
+        function CreateCard(skinName, skinCID, Introduced) {
+            return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:50%;height:auto" class=\"card-img-top\">  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
         }
 
         document.addEventListener("DOMContentLoaded", () => {

@@ -82,7 +82,7 @@ namespace FortniteChecker
 
             foreach (var item in data.Where(x => x.type.value == cosmeticType).OrderBy(x => x.introduction.backendValue))
             {
-                cards += $"skins.push(\"{item.name}|{item.images.icon}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
+                cards += $"skins.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
             }
             return cards;
         }
