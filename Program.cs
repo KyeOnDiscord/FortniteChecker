@@ -34,7 +34,12 @@ namespace FortniteChecker
                 Console.WriteLine("Welcome " + auth["displayName"]);
                 Console.WriteLine("Account ID " + auth["account_id"]);
                 Console.WriteLine("Your access token is: " + auth["access_token"]);
-                var q = QueryProfile.Get(auth);
+                Console.WriteLine("Getting QueryProfile");
+                JObject q = QueryProfile.Get(auth);
+                Console.WriteLine("Received QueryProfile, length = " + q.ToString().Length);
+#if DEBUG
+                File.WriteAllText($"{auth["account_id"]}.json", q.ToString());
+#endif
                 var items = q["profileChanges"][0]["profile"]["items"].ToArray();
 
 
