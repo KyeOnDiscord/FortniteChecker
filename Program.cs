@@ -26,6 +26,7 @@ namespace FortniteChecker
 
             //Open web link
             string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
+            Console.WriteLine("Opening link " + url);
             Process.Start(new ProcessStartInfo() { FileName = url, UseShellExecute = true });
             Console.Write("Enter authorization code:");
             string AuthCode = Console.ReadLine();
@@ -42,19 +43,14 @@ namespace FortniteChecker
             Console.WriteLine("Your access token is: " + auth.access_token);
             Console.WriteLine("Getting QueryProfile");
             File.WriteAllText("auth.json", auth.ToString());
-            QueryProfile.Modal.QueryProfileRoot q = QueryProfile.Get(auth);
+            QueryProfile.Modal.QueryProfileRoot q = QueryProfile.Get(auth, QueryProfile.Profile.athena);
 
-#if DEBUG
-            string queryProfilejson = JsonSerializer.Serialize(q);
-            Console.WriteLine("Received QueryProfile, length = " + queryProfilejson.Length);
-            File.WriteAllText($"{auth.access_token}.json", queryProfilejson);
-#endif
-            var items = q.profileChanges[0].profile.items;
+
+            var Account = q.profileChanges[0].profile;
             List<CosmeticsDB.Datum> ownedCosmetics = new();
-            foreach (var item in items)
+            foreach (var item in Account.items)
             {
                 string itemName = item.Value.templateId;
-
                 if (itemName.StartsWith("AthenaCharacter") || itemName.StartsWith("AthenaBackpack") || itemName.StartsWith("AthenaDance") || itemName.StartsWith("AthenaPickaxe") || itemName.StartsWith("AthenaGlider"))
                 {
                     string id = itemName.Split(":")[1];
@@ -64,7 +60,8 @@ namespace FortniteChecker
                         cosmetic.introduction = new CosmeticsDB.Introduction();
                         cosmetic.introduction.text = "Unknown";
                         cosmetic.introduction.backendValue = 0;
-                        cosmetic.introduction.season = "Unknown";
+                        cosmetic.introduction.season = "1";
+                        cosmetic.introduction.chapter = "1";
 
                     }
                     ownedCosmetics.Add(cosmetic);
@@ -78,6 +75,31 @@ namespace FortniteChecker
             html = html.Replace("{ backblings }", GetCards(ownedCosmetics, "backpack"));
             html = html.Replace("{ pickaxes }", GetCards(ownedCosmetics, "pickaxe"));
             html = html.Replace("{ emotes }", GetCards(ownedCosmetics, "emote"));
+            List<QueryProfile.Modal.PastSeason> pastSeasons = Account.stats.attributes.past_seasons;
+            int PastWinCount = 0;
+            foreach (var season in pastSeasons)
+            {
+                PastWinCount += season.numWins;
+            }
+
+            QueryProfile.Modal.PastSeason currentSeason = new();
+            currentSeason.seasonNumber = Account.stats.attributes.season_num;
+            currentSeason.numWins = Account.stats.attributes.lifetime_wins - PastWinCount;
+            currentSeason.seasonLevel = Account.stats.attributes.level;
+            currentSeason.bookLevel = Account.stats.attributes.book_level;
+            currentSeason.purchasedVIP = false;
+
+
+            pastSeasons.Add(currentSeason);
+            QueryProfile.Modal.QueryProfileRoot common = QueryProfile.Get(auth, QueryProfile.Profile.common_core);
+            html = html.Replace("{ LifeTimeWins }", Account.stats.attributes.lifetime_wins.ToString());
+            string VBucks = common.profileChanges[0].profile.items.First(x => x.Value.templateId == "Currency:MtxGiveaway").Value.quantity.ToString();
+            string GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
+            string GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
+            html = html.Replace("{ VBucks }", VBucks);
+            html = html.Replace("{ GiftsSent }", GiftsSent);
+            html = html.Replace("{ GiftsReceived }", GiftsReceived);
+            html = html.Replace("{ stats }", GetStats(pastSeasons));
             html = html.Replace("{ CREATION_TIMESTAMP }", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
             html = html.Replace("{DisplayName}", auth.displayName);
             html = html.Replace("{EpicID}", auth.account_id);
@@ -94,6 +116,16 @@ namespace FortniteChecker
                 cards += $"skins.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
             }
             return cards;
+        }
+
+        static string GetStats(IEnumerable<QueryProfile.Modal.PastSeason> pastSeasons)
+        {
+            string stats = "";
+            foreach (var season in pastSeasons)
+            {
+                stats += $"stats.push(new Season({season.seasonNumber}, {season.numWins}, {season.seasonLevel}, {season.bookLevel}, {season.purchasedVIP.ToString().ToLower()}));";
+            }
+            return stats;
         }
     }
 }
