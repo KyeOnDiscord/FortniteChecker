@@ -4,13 +4,8 @@ namespace FortniteChecker
 {
     internal sealed class AuthClient
     {
-        public AuthClient(string ClientID, string Secret)
-        {
-            this.ClientID = ClientID;
-            this.Secret = Secret;
-        }
-        public string ClientID { get; }
-        public string Secret { get; }
+        public required string ClientID { get; init; }
+        public required string Secret { get; init; }
         public string Authorization => $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ClientID}:{Secret}"))}";
     }
 }

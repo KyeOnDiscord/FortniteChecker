@@ -3,13 +3,13 @@
     internal sealed class CosmeticsDB
     {
 
-        public class CosmeticsDBRoot
+        public sealed class CosmeticsDBRoot
         {
             public int status { get; set; }
             public Datum[] data { get; set; }
         }
 
-        public class Datum
+        public sealed class Datum
         {
             public string id { get; set; }
             public string name { get; set; }
@@ -38,21 +38,21 @@
             public string[] builtInEmoteIds { get; set; }
         }
 
-        public class Type
+        public sealed class Type
         {
             public string value { get; set; }
             public string displayValue { get; set; }
             public string backendValue { get; set; }
         }
 
-        public class Rarity
+        public sealed class Rarity
         {
             public string value { get; set; }
             public string displayValue { get; set; }
             public string backendValue { get; set; }
         }
 
-        public class Series
+        public sealed class Series
         {
             public string value { get; set; }
             public string image { get; set; }
@@ -60,14 +60,14 @@
             public string backendValue { get; set; }
         }
 
-        public class Set
+        public sealed class Set
         {
             public string value { get; set; }
             public string text { get; set; }
             public string backendValue { get; set; }
         }
 
-        public class Introduction
+        public sealed class Introduction
         {
             public string chapter { get; set; }
             public string season { get; set; }
@@ -76,7 +76,7 @@
 
         }
 
-        public class Images
+        public sealed class Images
         {
             public string smallIcon { get; set; }
             public string icon { get; set; }
@@ -84,21 +84,21 @@
             public Other other { get; set; }
         }
 
-        public class Other
+        public sealed class Other
         {
             public string background { get; set; }
             public string coverart { get; set; }
             public string decal { get; set; }
         }
 
-        public class Variant
+        public sealed class Variant
         {
             public string channel { get; set; }
             public string type { get; set; }
             public Option[] options { get; set; }
         }
 
-        public class Option
+        public sealed class Option
         {
             public string tag { get; set; }
             public string name { get; set; }

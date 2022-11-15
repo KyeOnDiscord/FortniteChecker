@@ -28,7 +28,7 @@ namespace FortniteChecker
 
 #if DEBUG
                 Console.WriteLine($"{response.StatusCode} | Received QueryProfile ({profile}), length: {resp.Length}");
-                File.WriteAllText($"{auth.account_id}.json", resp);
+                File.WriteAllText($"{auth.account_id}_{profile}.json", resp);
 #endif
 
                 return JsonSerializer.Deserialize(resp, SourceGenerationContext.Default.QueryProfileRoot);
@@ -37,23 +37,23 @@ namespace FortniteChecker
 
         internal sealed class Modal
         {
-            internal class QueryProfileRoot
+            internal sealed class QueryProfileRoot
             {
                 public int profileRevision { get; set; }
                 public string profileId { get; set; }
                 public int profileChangesBaseRevision { get; set; }
-                public List<QueryProfile.Modal.ProfileChange> profileChanges { get; set; }
+                public List<ProfileChange> profileChanges { get; set; }
                 public int profileCommandRevision { get; set; }
                 public DateTime serverTime { get; set; }
                 public int responseVersion { get; set; }
             }
 
-            internal class ProfileChange
+            internal sealed class ProfileChange
             {
-                public QueryProfile.Modal.Profile profile { get; set; }
+                public Profile profile { get; set; }
             }
 
-            internal class Profile
+            internal sealed class Profile
             {
                 public string _id { get; set; }
                 public DateTime created { get; set; }
@@ -68,18 +68,18 @@ namespace FortniteChecker
                 public int commandRevision { get; set; }
             }
 
-            internal class Stats
+            internal sealed class Stats
             {
                 public Attributes attributes { get; set; }
             }
-            internal class Item
+            internal sealed class Item
             {
                 public string templateId { get; set; }
                 public Attributes attributes { get; set; }
                 public int quantity { get; set; }
             }
 
-            public class PastSeason
+            public sealed class PastSeason
             {
                 public PastSeason() { }
                 public int seasonNumber { get; set; }

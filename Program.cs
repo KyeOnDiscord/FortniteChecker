@@ -21,8 +21,10 @@ namespace FortniteChecker
         {
 
             //Create fortnitePCGameClient
-            var fortnitePCGameClient = new AuthClient("ec684b8c687f479fadea3cb2ad83f5c6", "e1f31c211f28413186262d37a13fc84d");
+            var fortnitePCGameClient = new AuthClient { ClientID = "ec684b8c687f479fadea3cb2ad83f5c6", Secret = "e1f31c211f28413186262d37a13fc84d" };
             CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(File.ReadAllText("br.json"), SourceGenerationContext.Default.CosmeticsDBRoot);
+
+
 
             //Open web link
             string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
@@ -48,13 +50,15 @@ namespace FortniteChecker
 
             var Account = q.profileChanges[0].profile;
             List<CosmeticsDB.Datum> ownedCosmetics = new();
+            string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack" };
             foreach (var item in Account.items)
             {
                 string itemName = item.Value.templateId;
-                if (itemName.StartsWith("AthenaCharacter") || itemName.StartsWith("AthenaBackpack") || itemName.StartsWith("AthenaDance") || itemName.StartsWith("AthenaPickaxe") || itemName.StartsWith("AthenaGlider"))
+                string itemType = itemName.Split(':')[0];
+                string itemValue = itemName.Split(':')[1];
+                if (CosmeticItemsToSearch.Contains(itemType))
                 {
-                    string id = itemName.Split(":")[1];
-                    var cosmetic = cosmetics.data.FirstOrDefault(x => x.id.ToLower() == id);
+                    var cosmetic = cosmetics.data.FirstOrDefault(x => x.id.ToLower() == itemValue);
                     if (cosmetic.introduction == null)
                     {
                         cosmetic.introduction = new CosmeticsDB.Introduction();
@@ -75,6 +79,9 @@ namespace FortniteChecker
             html = html.Replace("{ backblings }", GetCards(ownedCosmetics, "backpack"));
             html = html.Replace("{ pickaxes }", GetCards(ownedCosmetics, "pickaxe"));
             html = html.Replace("{ emotes }", GetCards(ownedCosmetics, "emote"));
+            html = html.Replace("{ wraps }", GetCards(ownedCosmetics, "wrap"));
+            html = html.Replace("{ loadingscreen }", GetCards(ownedCosmetics, "loadingscreen"));
+            html = html.Replace("{ music }", GetCards(ownedCosmetics, "music"));
             List<QueryProfile.Modal.PastSeason> pastSeasons = Account.stats.attributes.past_seasons;
             int PastWinCount = 0;
             foreach (var season in pastSeasons)
@@ -104,6 +111,7 @@ namespace FortniteChecker
             html = html.Replace("{DisplayName}", auth.displayName);
             html = html.Replace("{EpicID}", auth.account_id);
             File.WriteAllText($"{auth.account_id}.html", html);
+            Process.Start(new ProcessStartInfo() { FileName = $"{auth.account_id}.html", UseShellExecute = true });
 
         }
 
@@ -113,7 +121,7 @@ namespace FortniteChecker
 
             foreach (var item in data.Where(x => x.type.value == cosmeticType).OrderBy(x => x.introduction.backendValue))
             {
-                cards += $"skins.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
+                cards += $"i.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
             }
             return cards;
         }
