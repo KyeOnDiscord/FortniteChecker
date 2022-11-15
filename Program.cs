@@ -100,10 +100,21 @@ namespace FortniteChecker
             pastSeasons.Add(currentSeason);
             QueryProfile.Modal.QueryProfileRoot common = QueryProfile.Get(auth, QueryProfile.Profile.common_core);
             html = html.Replace("{ LifeTimeWins }", Account.stats.attributes.lifetime_wins.ToString());
-            string VBucks = common.profileChanges[0].profile.items.First(x => x.Value.templateId == "Currency:MtxGiveaway").Value.quantity.ToString();
+            int VBucks = 0;
+
+            foreach (var item in common.profileChanges[0].profile.items)
+            {
+                if (item.Value.templateId.StartsWith("Currency:Mtx"))
+                {
+                    if (item.Value != null && item.Value.quantity != null)
+                    {
+                        VBucks += (int)item.Value.quantity;
+                    }
+                }
+            }
             string GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
             string GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
-            html = html.Replace("{ VBucks }", VBucks);
+            html = html.Replace("{ VBucks }", VBucks.ToString());
             html = html.Replace("{ GiftsSent }", GiftsSent);
             html = html.Replace("{ GiftsReceived }", GiftsReceived);
             html = html.Replace("{ stats }", GetStats(pastSeasons));

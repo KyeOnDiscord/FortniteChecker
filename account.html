@@ -35,7 +35,6 @@
         return Math.round(diff / 86400, 0) + " day(s) ago";
     }
 
-
     function unixTime(unixtime) {
         var u = new Date(unixtime * 1000);
         return `${u.getUTCFullYear()}-${('0' + u.getUTCMonth()).slice(-2)}-${('0' + u.getUTCDate()).slice(-2)}`;

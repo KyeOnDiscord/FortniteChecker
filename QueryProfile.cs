@@ -76,7 +76,7 @@ namespace FortniteChecker
             {
                 public string templateId { get; set; }
                 public Attributes attributes { get; set; }
-                public int quantity { get; set; }
+                public int? quantity { get; set; }
             }
 
             public sealed class PastSeason
