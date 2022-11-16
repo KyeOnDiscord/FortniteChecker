@@ -97,7 +97,7 @@
         if (skinCID.startsWith("LSID") || skinCID.startsWith("LoadingScreen")) {
             return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><a target="_blank" href=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/background.png\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:90%; height:auto" class=\"card-img-top\"></a>  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
         } else {
-            return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:50%; height:auto" class=\"card-img-top\">  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
+            return `<div class=\"col\"> <div class=\"card text-bg-dark\" style="height:100%"> <div class=\"card-body\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:50%; height:auto"><br><span class=\"card-title fs-6\">${skinName}</span><div style=\"font-size:0.9rem\" class=\"card-footer text-muted fw-light\">${Introduced}</div></div></div></div>`;
         }
     }
 

@@ -54,6 +54,7 @@ namespace FortniteChecker
             foreach (var item in Account.items)
             {
                 string itemName = item.Value.templateId;
+
                 string itemType = itemName.Split(':')[0];
                 string itemValue = itemName.Split(':')[1];
                 if (CosmeticItemsToSearch.Contains(itemType))
@@ -66,10 +67,12 @@ namespace FortniteChecker
                         cosmetic.introduction.backendValue = 0;
                         cosmetic.introduction.season = "1";
                         cosmetic.introduction.chapter = "1";
-
                     }
                     ownedCosmetics.Add(cosmetic);
-
+                    if (item.Value.attributes.favorite)
+                    {
+                        cosmetic.favourite = true;
+                    }
                 }
             }
 
@@ -130,7 +133,14 @@ namespace FortniteChecker
         {
             string cards = "";
 
-            foreach (var item in data.Where(x => x.type.value == cosmeticType).OrderBy(x => x.introduction.backendValue))
+            //Get favourited items first
+            foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == true).OrderBy(x => x.introduction.backendValue))
+            {
+                cards += $"i.push(\"{item.name} ⭐|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
+            }
+
+            //Non favourited items
+            foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == false).OrderBy(x => x.introduction.backendValue))
             {
                 cards += $"i.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
             }

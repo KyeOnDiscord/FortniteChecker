@@ -110,6 +110,7 @@ namespace FortniteChecker
                 public List<string> loadouts { get; set; }
                 public int style_points { get; set; }
                 public bool mfa_reward_claimed { get; set; }
+                public bool favorite { get; set; } = false;
                 public int rested_xp_overflow { get; set; }
                 public DateTime last_xp_interaction { get; set; }
                 public int rested_xp_golden_path_granted { get; set; }

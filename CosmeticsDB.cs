@@ -36,6 +36,9 @@
             public string exclusiveDescription { get; set; }
             public string customExclusiveCallout { get; set; }
             public string[] builtInEmoteIds { get; set; }
+
+            //self defined
+            public bool favourite { get; set; }
         }
 
         public sealed class Type
