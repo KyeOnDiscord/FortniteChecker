@@ -1,239 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-        crossorigin="anonymous"></script>
-    <title>{DisplayName}'s Account | Pro Swapper Skin Checker</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script defer src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+                crossorigin="anonymous"></script>
+        <title>{DisplayName}'s Account | Pro Swapper Skin Checker</title>
+    </head>
 
-<style>
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: #5d5d5d #ffffff;
-    }
-
-    *::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: #5d5d5d;
-        border-radius: 16px;
-    }
-</style>
-<script>
-    function timeDifference(current, previous) {
-        var diff = current - previous;
-        return Math.round(diff / 86400, 0) + " day(s) ago";
-    }
-
-    function unixTime(unixtime) {
-        var u = new Date(unixtime * 1000);
-        return `${u.getUTCFullYear()}-${('0' + u.getUTCMonth()).slice(-2)}-${('0' + u.getUTCDate()).slice(-2)}`;
-    };
-
-    let CosmeticType = "Skins"
-
-    function GetCosmetic() {
-        //Create array of skins
-        var i = [];
-        switch (CosmeticType) {
-            case "Skins":
-                { skins }
-                break;
-            case "Backblings":
-                { backblings }
-                break;
-            case "Pickaxes":
-                { pickaxes }
-                break;
-            case "Emotes":
-                { emotes }
-                break;
-            case "Gliders":
-                { gliders }
-                break;
-            case "Wraps":
-                { wraps }
-                break;
-
-            case "LoadingScreen":
-                { loadingscreen }
-                break;
-            case "music":
-                { music }
-                break;
+    <style>
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #5d5d5d #ffffff;
         }
-        return i;
-    }
 
-    function CreateSkinCards() {
-        if (CosmeticType != "Stats") {
-            var CosmeticList = GetCosmetic();
-            CosmeticList.forEach(cosmetic => {
-                document.getElementById("content").innerHTML += CreateCard(cosmetic);
+        *::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #5d5d5d;
+            border-radius: 16px;
+        }
+    </style>
+    <script>
+        function timeDifference(current, previous) {
+            var diff = current - previous;
+            return Math.round(diff / 86400, 0) + " day(s) ago";
+        }
+
+        function unixTime(unixtime) {
+            var u = new Date(unixtime * 1000);
+            return `${u.getUTCFullYear()}-${('0' + u.getUTCMonth()).slice(-2)}-${('0' + u.getUTCDate()).slice(-2)}`;
+        };
+
+        let CosmeticType = "Skins"
+
+        function GetCosmetic() {
+            //Create array of skins
+            var i = [];
+            switch (CosmeticType) {
+                case "Skins":
+                    { skins }
+                    break;
+                case "Backblings":
+                    { backblings }
+                    break;
+                case "Pickaxes":
+                    { pickaxes }
+                    break;
+                case "Emotes":
+                    { emotes }
+                    break;
+                case "Gliders":
+                    { gliders }
+                    break;
+                case "Wraps":
+                    { wraps }
+                    break;
+
+                case "LoadingScreen":
+                    { loadingscreen }
+                    break;
+                case "music":
+                    { music }
+                    break;
+            }
+            return i;
+        }
+
+        function CreateSkinCards() {
+            if (CosmeticType != "Stats") {
+                var CosmeticList = GetCosmetic();
+                CosmeticList.forEach(cosmetic => {
+                    document.getElementById("content").innerHTML += CreateCard(cosmetic);
+                })
+            }
+            else {
+                //Stats
+                var Stats = GetStats();
+                document.getElementById("content").innerHTML += `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> { VBucks }</span><p class=\"card-text fs-6\">Lifetime Wins: { LifeTimeWins }<br>Gifts Sent: { GiftsSent }<br> Gifts Received: { GiftsReceived }</p></div> </div> </div>`;
+                Stats.forEach(season => {
+                    document.getElementById("content").innerHTML += GetStatsCard(season);
+                })
+            }
+        }
+
+        function GetRarityCSS(rarity) {
+            switch (rarity) {
+                case "uncommon":
+                    return "background: -o-radial-gradient(#6abb1e, #175117);	background: radial-gradient(#6abb1e, #175117);	border: 2px solid #88e339;";
+                case "rare":
+                    return "background: -o-radial-gradient(#2cc0ff, #143877);	background: radial-gradient(#2cc0ff, #143877);	border: 2px solid #37d0ff;";
+                case "epic":
+                    return "background: -o-radial-gradient(#c359ff, #4c2483);	background: radial-gradient(#c359ff, #4c2483);	border: 2px solid #ea5eff;";
+                case "legendary":
+                    return "background: -o-radial-gradient(#ea8d23, #78371d);	background: radial-gradient(#ea8d23, #78371d);	border: 2px solid #e98d4b;";
+                case "mythic":
+                    return "background: -o-radial-gradient(#f5cb44, #ea8d23);	background: radial-gradient(#f5cb44, #ea8d23);	border: 2px solid #e98d4b;";
+                case "dark":
+                    return "background: -o-radial-gradient(#fb22df, #520c6f);	background: radial-gradient(#fb22df, #520c6f);	border: 2px solid #ff42e7;";
+                case "frozen":
+                    return "background: -o-radial-gradient(#94dfff, #269ed6);	background: radial-gradient(#94dfff, #269ed6);	border: 2px solid #c4dff7;";
+                case "icon":
+                    return "background: -o-radial-gradient(#36b7b7, #256b6b);	background: radial-gradient(#36b7b7, #256b6b);	border: 2px solid #52e0e0;";
+                case "lava":
+                    return "background: -o-radial-gradient(#ea8d23, #6a0a31);	background: radial-gradient(#ea8d23, #6a0a31);	border: 2px solid #d19635;";
+                case "marvel":
+                    return "background: -o-radial-gradient(#c53333, #761b1b);	background: radial-gradient(#c53333, #761b1b);	border: 2px solid #ef3537;";
+                case "shadow":
+                    return "background: -o-radial-gradient(#717171, #191919);	background: radial-gradient(#717171, #191919);	border: 2px solid #949494;";
+                case "gaminglegends":
+                    return "background: -o-radial-gradient(#5447d4, #312497);	background: radial-gradient(#5447d4, #312497);	border: 2px solid #8078ff;";
+                case "dc":
+                    return "background: -o-radial-gradient(#5475c7, #243461);	background: radial-gradient(#5475c7, #243461);	border: 2px solid #6094ce;";
+                case "slurp":
+                    return "background: -o-radial-gradient(#29f1a3, #12a9a4);	background: radial-gradient(#29f1a3, #12a9a4);	border: 2px solid #53f0ff;";
+                case "starwars":
+                    return "background: -o-radial-gradient(#1b366e, #081737);	background: radial-gradient(#1b366e, #081737);	border: 2px solid #e7c413;";
+                default:
+                case "common":
+                    return "background: -o-radial-gradient(#bebebe, #646464);background: radial-gradient(#bebebe, #646464);border: 2px solid #b1b1b1;";
+            }
+        }
+
+
+        function CreateCard(cosmetic) {
+            return `<img class="col m-1 col-sm-1 rounded" src=\"https://fortnite-api.com/images/cosmetics/br/${cosmetic.id}/smallicon.png\" style="width:100px; ${GetRarityCSS(cosmetic.rarity)}};">`;
+        }
+
+        class Season {
+            constructor(seasonNumber, numWins, seasonLevel, bookLevel, purchasedVIP) {
+                this.seasonNumber = seasonNumber;
+                this.numWins = numWins;
+                this.seasonLevel = seasonLevel;
+                this.bookLevel = bookLevel;
+                this.purchasedVIP = purchasedVIP;
+            }
+        }
+
+        class Cosmetic {
+            constructor(name, id, rarity) {
+                this.name = name;
+                this.id = id;
+                this.rarity = rarity;
+            }
+        }
+
+
+        function GetStatsCard(Season) {
+            BattlePassTierImage = Season.purchasedVIP ? "M9hhne9.png" : "jqq5XB6.png";
+            MaxTier = Season.bookLevel == 100 ? "🌟" : "";
+            return `<div class=\"col col-auto m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><h5 class=\"card-title fs-5\">Season ${Season.seasonNumber}</h5> <p class=\"card-text fs-6\">Wins: ${Season.numWins}</p> <p class=\"card-text fs-6\">Season Level: ${Season.seasonLevel}</p> <p class=\"card-text fs-6\">Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
+        }
+
+        function GetStats() {
+            var stats = [];
+            { stats }
+            return stats;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const creationTime = { CREATION_TIMESTAMP };
+            document.getElementById("timestamp").innerText = timeDifference(Date.now() / 1000, creationTime);
+            document.getElementById("timestamp").setAttribute(`data-bs-title`, `${unixTime(creationTime)}`);
+            CreateSkinCards();
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
             })
+        });
+
+        function UpdatePage(type) {
+            CosmeticType = type;
+            document.getElementById("content").innerHTML = "";
+            document.getElementById("Skins").setAttribute("class", "nav-link");
+            document.getElementById("Backblings").setAttribute("class", "nav-link");
+            document.getElementById("Pickaxes").setAttribute("class", "nav-link");
+            document.getElementById("Emotes").setAttribute("class", "nav-link");
+            document.getElementById("Wraps").setAttribute("class", "nav-link");
+            document.getElementById("Gliders").setAttribute("class", "nav-link");
+            document.getElementById("music").setAttribute("class", "nav-link");
+            document.getElementById("LoadingScreen").setAttribute("class", "nav-link");
+            document.getElementById("Stats").setAttribute("class", "nav-link");
+
+
+            document.getElementById(type).setAttribute("class", "nav-link active");
+            CreateSkinCards();
         }
-        else {
-            //Stats
-            var Stats = GetStats();
-            document.getElementById("content").innerHTML += `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> { VBucks }</span><p class=\"card-text fs-6\">Lifetime Wins: { LifeTimeWins }<br>Gifts Sent: { GiftsSent }<br> Gifts Received: { GiftsReceived }</p></div> </div> </div>`;
-            Stats.forEach(season => {
-                document.getElementById("content").innerHTML += GetStatsCard(season);
-            })
-        }
-    }
 
-    function GetRarityCSS(rarity) {
-        switch (rarity) {
-            case "common":
-                return "background: -o-radial-gradient(#bebebe, #646464);background: radial-gradient(#bebebe, #646464);border: 2px solid #b1b1b1;overflow: hidden";
-            case "uncommon":
-                return "background: -o-radial-gradient(#6abb1e, #175117);	background: radial-gradient(#6abb1e, #175117);	border: 2px solid #88e339;	overflow: hidden";
-            case "rare":
-                return "background: -o-radial-gradient(#2cc0ff, #143877);	background: radial-gradient(#2cc0ff, #143877);	border: 2px solid #37d0ff;	overflow: hidden";
-            case "epic":
-                return "background: -o-radial-gradient(#c359ff, #4c2483);	background: radial-gradient(#c359ff, #4c2483);	border: 2px solid #ea5eff;	overflow: hidden";
-            case "legendary":
-                return "background: -o-radial-gradient(#ea8d23, #78371d);	background: radial-gradient(#ea8d23, #78371d);	border: 2px solid #e98d4b;	overflow: hidden";
-            case "mythic":
-                return "background: -o-radial-gradient(#f5cb44, #ea8d23);	background: radial-gradient(#f5cb44, #ea8d23);	border: 2px solid #e98d4b;	overflow: hidden";
-            case "dark":
-                return "background: -o-radial-gradient(#fb22df, #520c6f);	background: radial-gradient(#fb22df, #520c6f);	border: 2px solid #ff42e7;	overflow: hidden";
-            case "frozen":
-                return "background: -o-radial-gradient(#94dfff, #269ed6);	background: radial-gradient(#94dfff, #269ed6);	border: 2px solid #c4dff7;	overflow: hidden";
-            case "icon":
-                return "background: -o-radial-gradient(#36b7b7, #256b6b);	background: radial-gradient(#36b7b7, #256b6b);	border: 2px solid #52e0e0;	overflow: hidden";
-            case "lava":
-                return "background: -o-radial-gradient(#ea8d23, #6a0a31);	background: radial-gradient(#ea8d23, #6a0a31);	border: 2px solid #d19635;	overflow: hidden";
-            case "marvel":
-                return "background: -o-radial-gradient(#c53333, #761b1b);	background: radial-gradient(#c53333, #761b1b);	border: 2px solid #ef3537;	overflow: hidden";
-            case "shadow":
-                return "background: -o-radial-gradient(#717171, #191919);	background: radial-gradient(#717171, #191919);	border: 2px solid #949494;	overflow: hidden";
-            case "gaminglegends":
-                return "background: -o-radial-gradient(#5447d4, #312497);	background: radial-gradient(#5447d4, #312497);	border: 2px solid #8078ff;	overflow: hidden";
-            case "dc":
-                return "background: -o-radial-gradient(#5475c7, #243461);	background: radial-gradient(#5475c7, #243461);	border: 2px solid #6094ce;	overflow: hidden";
-            case "slurp":
-                return "background: -o-radial-gradient(#29f1a3, #12a9a4);	background: radial-gradient(#29f1a3, #12a9a4);	border: 2px solid #53f0ff;	overflow: hidden";
-            case "starwars":
-                return "background: -o-radial-gradient(#1b366e, #081737);	background: radial-gradient(#1b366e, #081737);	border: 2px solid #e7c413;	overflow: hidden";
-            default:
-                return "background: -o-radial-gradient(#bebebe, #646464);background: radial-gradient(#bebebe, #646464);border: 2px solid #b1b1b1;overflow: hidden";
-        }
-    }
+    </script>
 
+    <body style="margin:10px;background-color:#333">
 
-    function CreateCard(cosmetic) {
-        return `<img class="col m-1 col-sm-1 rounded" src=\"https://fortnite-api.com/images/cosmetics/br/${cosmetic.id}/icon.png\" style="width:100px; ${GetRarityCSS(cosmetic.rarity)}};">`;
-    }
-
-    class Season {
-        constructor(seasonNumber, numWins, seasonLevel, bookLevel, purchasedVIP) {
-            this.seasonNumber = seasonNumber;
-            this.numWins = numWins;
-            this.seasonLevel = seasonLevel;
-            this.bookLevel = bookLevel;
-            this.purchasedVIP = purchasedVIP;
-        }
-    }
-
-    class Cosmetic {
-        constructor(name, id, rarity) {
-            this.name = name;
-            this.id = id;
-            this.rarity = rarity;
-        }
-    }
-
-
-    function GetStatsCard(Season) {
-        BattlePassTierImage = Season.purchasedVIP ? "M9hhne9.png" : "jqq5XB6.png";
-        MaxTier = Season.bookLevel == 100 ? "🌟" : "";
-        return `<div class=\"col col-auto m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><h5 class=\"card-title fs-5\">Season ${Season.seasonNumber}</h5> <p class=\"card-text fs-6\">Wins: ${Season.numWins}</p> <p class=\"card-text fs-6\">Season Level: ${Season.seasonLevel}</p> <p class=\"card-text fs-6\">Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
-    }
-
-    function GetStats() {
-        var stats = [];
-        { stats }
-        return stats;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const creationTime = { CREATION_TIMESTAMP };
-        document.getElementById("timestamp").innerText = timeDifference(Date.now() / 1000, creationTime);
-        document.getElementById("timestamp").setAttribute(`data-bs-title`, `${unixTime(creationTime)}`);
-        CreateSkinCards();
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    });
-
-    function UpdatePage(type) {
-        CosmeticType = type;
-        document.getElementById("content").innerHTML = "";
-        document.getElementById("Skins").setAttribute("class", "nav-link");
-        document.getElementById("Backblings").setAttribute("class", "nav-link");
-        document.getElementById("Pickaxes").setAttribute("class", "nav-link");
-        document.getElementById("Emotes").setAttribute("class", "nav-link");
-        document.getElementById("Wraps").setAttribute("class", "nav-link");
-        document.getElementById("Gliders").setAttribute("class", "nav-link");
-        document.getElementById("music").setAttribute("class", "nav-link");
-        document.getElementById("LoadingScreen").setAttribute("class", "nav-link");
-        document.getElementById("Stats").setAttribute("class", "nav-link");
-
-
-        document.getElementById(type).setAttribute("class", "nav-link active");
-        CreateSkinCards();
-    }
-
-</script>
-
-<body style="margin:10px;background-color:#333">
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Pro Swapper Skin Checker</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a id="Skins" class="nav-link active" aria-current="page" href="#"
-                        onclick="UpdatePage('Skins')">Skins</a>
-                    <a id="Backblings" class="nav-link" href="#" onclick="UpdatePage('Backblings')">Backblings</a>
-                    <a id="Pickaxes" class="nav-link" href="#" onclick="UpdatePage('Pickaxes')">Pickaxes</a>
-                    <a id="Emotes" class="nav-link" href="#" onclick="UpdatePage('Emotes')">Emotes</a>
-                    <a id="Wraps" class="nav-link" href="#" onclick="UpdatePage('Wraps')">Wraps</a>
-                    <a id="Gliders" class="nav-link" href="#" onclick="UpdatePage('Gliders')">Gliders</a>
-                    <a id="music" class="nav-link" href="#" onclick="UpdatePage('music')">Music</a>
-                    <a id="LoadingScreen" class="nav-link" href="#" onclick="UpdatePage('LoadingScreen')">Loading
-                        Screens</a>
-                    <a id="Stats" class="nav-link" href="#" onclick="UpdatePage('Stats')">Stats</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Pro Swapper Skin Checker</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a id="Skins" class="nav-link active" aria-current="page" href="#"
+                           onclick="UpdatePage('Skins')">Skins</a>
+                        <a id="Backblings" class="nav-link" href="#" onclick="UpdatePage('Backblings')">Backblings</a>
+                        <a id="Pickaxes" class="nav-link" href="#" onclick="UpdatePage('Pickaxes')">Pickaxes</a>
+                        <a id="Emotes" class="nav-link" href="#" onclick="UpdatePage('Emotes')">Emotes</a>
+                        <a id="Wraps" class="nav-link" href="#" onclick="UpdatePage('Wraps')">Wraps</a>
+                        <a id="Gliders" class="nav-link" href="#" onclick="UpdatePage('Gliders')">Gliders</a>
+                        <a id="music" class="nav-link" href="#" onclick="UpdatePage('music')">Music</a>
+                        <a id="LoadingScreen" class="nav-link" href="#" onclick="UpdatePage('LoadingScreen')">Loading
+                            Screens</a>
+                        <a id="Stats" class="nav-link" href="#" onclick="UpdatePage('Stats')">Stats</a>
+                    </div>
                 </div>
             </div>
+        </nav>
+
+        <span class="text-white">This file was generated <span id="timestamp" data-bs-toggle="tooltip"
+                  data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="a">0 day(s)</span> any changes
+            to this account after this date are not shown here.</span><br>
+
+        <span class="text-white">ID: {EpicID}<br>Display Name: {DisplayName}</span>
+        <div class="container-fluid text-center">
+            <div id="content" class="row"></div>
         </div>
-    </nav>
-
-    <span class="text-white">This file was generated <span id="timestamp" data-bs-toggle="tooltip"
-            data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="a">0 day(s)</span> any changes
-        to this account after this date are not shown here.</span><br>
-
-    <span class="text-white">ID: {EpicID}<br>Display Name: {DisplayName}</span>
-    <div class="container-fluid text-center">
-        <div id="content" class="row"></div>
-    </div>
-</body>
+    </body>
 
 </html>
