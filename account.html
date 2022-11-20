@@ -85,7 +85,7 @@
             else {
                 //Stats
                 var Stats = GetStats();
-                document.getElementById("content").innerHTML += `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> { VBucks }</span><p class=\"card-text fs-6\">Lifetime Wins: { LifeTimeWins }<br>Gifts Sent: { GiftsSent }<br> Gifts Received: { GiftsReceived }</p></div> </div> </div>`;
+                document.getElementById("content").innerHTML += `<div class=\"col col-lg-2 m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> { VBucks }</span><p class=\"card-text fs-6\">Lifetime Wins: { LifeTimeWins }<br>Gifts Sent: { GiftsSent }<br> Gifts Received: { GiftsReceived }</p></div> </div> </div>`;
                 Stats.forEach(season => {
                     document.getElementById("content").innerHTML += GetStatsCard(season);
                 })
@@ -157,7 +157,7 @@
         function GetStatsCard(Season) {
             BattlePassTierImage = Season.purchasedVIP ? "M9hhne9.png" : "jqq5XB6.png";
             MaxTier = Season.bookLevel == 100 ? "🌟" : "";
-            return `<div class=\"col col-auto m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><h5 class=\"card-title fs-5\">Season ${Season.seasonNumber}</h5> <p class=\"card-text fs-6\">Wins: ${Season.numWins}</p> <p class=\"card-text fs-6\">Season Level: ${Season.seasonLevel}</p> <p class=\"card-text fs-6\">Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
+            return `<div class=\"col col-lg-2 m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><p class=\"card-title fs-5\">Season ${Season.seasonNumber}<br><p>Wins: ${Season.numWins}<br>Season Level: ${Season.seasonLevel}<br>Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
         }
 
         function GetStats() {
