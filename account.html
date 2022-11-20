@@ -77,10 +77,9 @@
 
     function CreateSkinCards() {
         if (CosmeticType != "Stats") {
-            var SkinList = GetCosmetic();
-            SkinList.forEach(skin => {
-                data = skin.split("|");
-                document.getElementById("content").innerHTML += CreateCard(data[0], data[1], data[2]);
+            var CosmeticList = GetCosmetic();
+            CosmeticList.forEach(cosmetic => {
+                document.getElementById("content").innerHTML += CreateCard(cosmetic);
             })
         }
         else {
@@ -93,12 +92,48 @@
         }
     }
 
-    function CreateCard(skinName, skinCID, Introduced) {
-        if (skinCID.startsWith("LSID") || skinCID.startsWith("LoadingScreen")) {
-            return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><a target="_blank" href=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/background.png\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:90%; height:auto" class=\"card-img-top\"></a>  <h5 class=\"card-title fs-5\">${skinName}</h5> <div class=\"card-footer text-muted fs-6\">${Introduced}</div></div> </div> </div>`;
-        } else {
-            return `<div class=\"col\"> <div class=\"card text-bg-dark\" style="height:100%"> <div class=\"card-body\"><img src=\"https://fortnite-api.com/images/cosmetics/br/${skinCID}/icon.png\" style="width:50%; height:auto"><br><span class=\"card-title fs-6\">${skinName}</span><div style=\"font-size:0.9rem\" class=\"card-footer text-muted fw-light\">${Introduced}</div></div></div></div>`;
+    function GetRarityCSS(rarity) {
+        switch (rarity) {
+            case "common":
+                return "background: -o-radial-gradient(#bebebe, #646464);background: radial-gradient(#bebebe, #646464);border: 2px solid #b1b1b1;overflow: hidden";
+            case "uncommon":
+                return "background: -o-radial-gradient(#6abb1e, #175117);	background: radial-gradient(#6abb1e, #175117);	border: 2px solid #88e339;	overflow: hidden";
+            case "rare":
+                return "background: -o-radial-gradient(#2cc0ff, #143877);	background: radial-gradient(#2cc0ff, #143877);	border: 2px solid #37d0ff;	overflow: hidden";
+            case "epic":
+                return "background: -o-radial-gradient(#c359ff, #4c2483);	background: radial-gradient(#c359ff, #4c2483);	border: 2px solid #ea5eff;	overflow: hidden";
+            case "legendary":
+                return "background: -o-radial-gradient(#ea8d23, #78371d);	background: radial-gradient(#ea8d23, #78371d);	border: 2px solid #e98d4b;	overflow: hidden";
+            case "mythic":
+                return "background: -o-radial-gradient(#f5cb44, #ea8d23);	background: radial-gradient(#f5cb44, #ea8d23);	border: 2px solid #e98d4b;	overflow: hidden";
+            case "dark":
+                return "background: -o-radial-gradient(#fb22df, #520c6f);	background: radial-gradient(#fb22df, #520c6f);	border: 2px solid #ff42e7;	overflow: hidden";
+            case "frozen":
+                return "background: -o-radial-gradient(#94dfff, #269ed6);	background: radial-gradient(#94dfff, #269ed6);	border: 2px solid #c4dff7;	overflow: hidden";
+            case "icon":
+                return "background: -o-radial-gradient(#36b7b7, #256b6b);	background: radial-gradient(#36b7b7, #256b6b);	border: 2px solid #52e0e0;	overflow: hidden";
+            case "lava":
+                return "background: -o-radial-gradient(#ea8d23, #6a0a31);	background: radial-gradient(#ea8d23, #6a0a31);	border: 2px solid #d19635;	overflow: hidden";
+            case "marvel":
+                return "background: -o-radial-gradient(#c53333, #761b1b);	background: radial-gradient(#c53333, #761b1b);	border: 2px solid #ef3537;	overflow: hidden";
+            case "shadow":
+                return "background: -o-radial-gradient(#717171, #191919);	background: radial-gradient(#717171, #191919);	border: 2px solid #949494;	overflow: hidden";
+            case "gaminglegends":
+                return "background: -o-radial-gradient(#5447d4, #312497);	background: radial-gradient(#5447d4, #312497);	border: 2px solid #8078ff;	overflow: hidden";
+            case "dc":
+                return "background: -o-radial-gradient(#5475c7, #243461);	background: radial-gradient(#5475c7, #243461);	border: 2px solid #6094ce;	overflow: hidden";
+            case "slurp":
+                return "background: -o-radial-gradient(#29f1a3, #12a9a4);	background: radial-gradient(#29f1a3, #12a9a4);	border: 2px solid #53f0ff;	overflow: hidden";
+            case "starwars":
+                return "background: -o-radial-gradient(#1b366e, #081737);	background: radial-gradient(#1b366e, #081737);	border: 2px solid #e7c413;	overflow: hidden";
+            default:
+                return "background: -o-radial-gradient(#bebebe, #646464);background: radial-gradient(#bebebe, #646464);border: 2px solid #b1b1b1;overflow: hidden";
         }
+    }
+
+
+    function CreateCard(cosmetic) {
+        return `<img class="col m-1 col-sm-1 rounded" src=\"https://fortnite-api.com/images/cosmetics/br/${cosmetic.id}/icon.png\" style="width:100px; ${GetRarityCSS(cosmetic.rarity)}};">`;
     }
 
     class Season {
@@ -111,11 +146,19 @@
         }
     }
 
+    class Cosmetic {
+        constructor(name, id, rarity) {
+            this.name = name;
+            this.id = id;
+            this.rarity = rarity;
+        }
+    }
+
 
     function GetStatsCard(Season) {
         BattlePassTierImage = Season.purchasedVIP ? "M9hhne9.png" : "jqq5XB6.png";
         MaxTier = Season.bookLevel == 100 ? "🌟" : "";
-        return `<div class=\"col\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><h5 class=\"card-title fs-5\">Season ${Season.seasonNumber}</h5> <p class=\"card-text fs-6\">Wins: ${Season.numWins}</p> <p class=\"card-text fs-6\">Season Level: ${Season.seasonLevel}</p> <p class=\"card-text fs-6\">Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
+        return `<div class=\"col col-auto m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><h5 class=\"card-title fs-5\">Season ${Season.seasonNumber}</h5> <p class=\"card-text fs-6\">Wins: ${Season.numWins}</p> <p class=\"card-text fs-6\">Season Level: ${Season.seasonLevel}</p> <p class=\"card-text fs-6\">Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
     }
 
     function GetStats() {
@@ -188,7 +231,9 @@
         to this account after this date are not shown here.</span><br>
 
     <span class="text-white">ID: {EpicID}<br>Display Name: {DisplayName}</span>
-    <div id="content" class="container-fluid text-center row row-cols-sm-6 row-cols-sm-6 g-2"></div>
+    <div class="container-fluid text-center">
+        <div id="content" class="row"></div>
+    </div>
 </body>
 
 </html>

@@ -50,9 +50,11 @@
 
         public sealed class Rarity
         {
+
             public string value { get; set; }
             public string displayValue { get; set; }
             public string backendValue { get; set; }
+            public int backendIntValue { get; set; }//self defined
         }
 
         public sealed class Series

@@ -40,6 +40,13 @@ namespace FortniteChecker
             }
             var auth = Auth.GetAuth(fortnitePCGameClient, AuthCode);
 
+            if (auth.access_token == null)
+            {
+                Console.WriteLine("Invalid Access Token");
+                Console.ReadKey();
+                return;
+            }
+
             Console.WriteLine("Welcome " + auth.displayName);
             Console.WriteLine("Account ID " + auth.account_id);
             Console.WriteLine("Your access token is: " + auth.access_token);
@@ -68,6 +75,7 @@ namespace FortniteChecker
                         cosmetic.introduction.season = "1";
                         cosmetic.introduction.chapter = "1";
                     }
+                    cosmetic.rarity.backendIntValue = Rarity.RarityToInt(cosmetic.rarity.displayValue);
                     ownedCosmetics.Add(cosmetic);
                     if (item.Value.attributes.favorite)
                     {
@@ -136,14 +144,17 @@ namespace FortniteChecker
             //Get favourited items first
             foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == true).OrderBy(x => x.introduction.backendValue))
             {
-                cards += $"i.push(\"{item.name} ⭐|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
+                cards += $@"i.push(new Cosmetic(""{item.name}"",""{item.id}"",""mythic""));";
             }
 
             //Non favourited items
-            foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == false).OrderBy(x => x.introduction.backendValue))
+            foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == false).OrderBy(x => x.rarity.backendIntValue))
             {
-                cards += $"i.push(\"{item.name}|{item.id}|Chapter {item.introduction.chapter}, Season {item.introduction.season}\");";
+                Console.WriteLine($"{item.name} | {item.rarity.backendIntValue}");
+                cards += $@"i.push(new Cosmetic(""{item.name}"",""{item.id}"",""{item.rarity.value}""));";
             }
+
+
             return cards;
         }
 
