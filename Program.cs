@@ -66,6 +66,9 @@ internal class Program
             if (CosmeticItemsToSearch.Contains(itemType))
             {
                 var cosmetic = cosmetics.data.FirstOrDefault(x => x.id.ToLower() == itemValue);
+                if (cosmetic == null)
+                    continue;
+
                 if (cosmetic.introduction == null)
                 {
                     cosmetic.introduction = new CosmeticsDB.Introduction();
