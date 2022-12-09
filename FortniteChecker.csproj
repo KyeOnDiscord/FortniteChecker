@@ -11,15 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Update="account.html">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</None>
-		<None Update="br.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="Properties\" />
 	</ItemGroup>
 

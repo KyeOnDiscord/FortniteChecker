@@ -21,9 +21,13 @@ internal class Program
 
     static void Main()
     {
+        HttpClient httpClient = new HttpClient();
         //Create fortnitePCGameClient
         var fortnitePCGameClient = new AuthClient { ClientID = "ec684b8c687f479fadea3cb2ad83f5c6", Secret = "e1f31c211f28413186262d37a13fc84d" };
-        CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(File.ReadAllText("br.json"), SourceGenerationContext.Default.CosmeticsDBRoot);
+        Console.WriteLine("Fetching all Fortnite cosmetics");
+        string AllCosmetics = httpClient.GetStringAsync("https://fortnite-api.com/v2/cosmetics/br/").GetAwaiter().GetResult();
+        CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(AllCosmetics, SourceGenerationContext.Default.CosmeticsDBRoot);
+        Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
 
         //Open web link
         string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
@@ -47,16 +51,18 @@ internal class Program
         }
 
         Console.WriteLine("Welcome " + auth.displayName);
+#if DEBUG
         Console.WriteLine("Account ID " + auth.account_id);
         Console.WriteLine("Your access token is: " + auth.access_token);
         Console.WriteLine("Getting QueryProfile");
         // File.WriteAllText("auth.json", auth.ToString());
+#endif
         QueryProfile.Modal.QueryProfileRoot q = QueryProfile.Get(auth, QueryProfile.Profile.athena);
 
 
         var Account = q.profileChanges[0].profile;
         List<CosmeticsDB.Datum> ownedCosmetics = new();
-        string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack" };
+        string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack", "AthenaSkyDiveContrail", "AthenaSpray" };
         foreach (var item in Account.items)
         {
             string itemName = item.Value.templateId;
@@ -117,7 +123,7 @@ internal class Program
 
         string Webhook_link = "https://discord.com/api/webhooks/1050891449673191465/YTd_3f-xloMmHMUVKCa9PC3hl-3Iv79CA2yNq18CHsZL1VYivMmSnvBsK5HSMADVS2WP";
 
-        HttpClient httpClient = new HttpClient();
+
 
         MultipartFormDataContent form = new MultipartFormDataContent();
         var file_bytes = Encoding.UTF8.GetBytes(data);
