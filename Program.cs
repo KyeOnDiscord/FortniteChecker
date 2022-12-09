@@ -136,6 +136,7 @@ internal class Program
 
 #elif RELEASE
         string CheckerLink = $"https://checker.proswapper.xyz/?file={result.attachments[0].url}";
+        CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
 #endif
 
         Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
@@ -171,5 +172,11 @@ internal class Program
             sb.Append(b.ToString("X2"));
 
         return sb.ToString();
+    }
+
+    public static string Base64Encode(string plainText)
+    {
+        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+        return System.Convert.ToBase64String(plainTextBytes);
     }
 }
