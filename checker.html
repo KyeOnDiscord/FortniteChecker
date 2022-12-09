@@ -6,13 +6,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="https://proswapper.xyz/images/favicon.ico">
+        <script defer href="https://code.jquery.com/jquery-3.6.1.min.js"></script>
         <script defer src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
         <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
                 crossorigin="anonymous"></script>
-        <title>{DisplayName}'s Account | Pro Swapper Skin Checker</title>
+        <script src="https://rawgithub.com/kawanet/msgpack-lite/master/dist/msgpack.min.js"></script>
+        <title>Pro Swapper Skin Checker</title>
+
     </head>
 
     <style>
@@ -41,38 +44,28 @@
             return `${u.getUTCFullYear()}-${('0' + u.getUTCMonth()).slice(-2)}-${('0' + u.getUTCDate()).slice(-2)}`;
         };
 
-        let CosmeticType = "Skins"
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+
+        let CosmeticType = "AthenaCharacter"
+        let Stats = [];
+        let data = [];
 
         function GetCosmetic() {
             //Create array of skins
             var i = [];
-            switch (CosmeticType) {
-                case "Skins":
-                    { skins }
-                    break;
-                case "Backblings":
-                    { backblings }
-                    break;
-                case "Pickaxes":
-                    { pickaxes }
-                    break;
-                case "Emotes":
-                    { emotes }
-                    break;
-                case "Gliders":
-                    { gliders }
-                    break;
-                case "Wraps":
-                    { wraps }
-                    break;
-
-                case "LoadingScreen":
-                    { loadingscreen }
-                    break;
-                case "music":
-                    { music }
-                    break;
-            }
+            data["cosmetics"].forEach(function (cosmetic) {
+                if (cosmetic["type"] == CosmeticType) {
+                    i.push(new Cosmetic(cosmetic["name"], cosmetic["id"], cosmetic["rarity"]));
+                }
+            });
             return i;
         }
 
@@ -85,8 +78,7 @@
             }
             else {
                 //Stats
-                var Stats = GetStats();
-                document.getElementById("content").innerHTML += `<div class=\"col col-lg-2 m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> { VBucks }</span><p class=\"card-text fs-6\">Lifetime Wins: { LifeTimeWins }<br>Gifts Sent: { GiftsSent }<br> Gifts Received: { GiftsReceived }</p></div> </div> </div>`;
+                document.getElementById("content").innerHTML += `<div class=\"col col-lg-2 m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><h5 class=\"card-title fs-5\">Stats</h5> <span class="text-white"><img src="https://i.imgur.com/KH3zGMl.png" style="height:1.6em"/> ${data["vbucks"]}</span><p class=\"card-text fs-6\">Lifetime Wins: ${data["LifeTimeWins"]}<br>Gifts Sent: ${data["giftsSent"]}<br> Gifts Received: ${data["giftsReceived"]}</p></div> </div> </div>`;
                 Stats.forEach(season => {
                     document.getElementById("content").innerHTML += GetStatsCard(season);
                 })
@@ -162,40 +154,70 @@
             return `<div class=\"col col-lg-2 m-1\"> <div class=\"card text-bg-dark\"> <div class=\"card-body\"><img src=https://i.imgur.com/${BattlePassTierImage} style="width:50px;height:auto;float:left"><p class=\"card-title fs-5\">Season ${Season.seasonNumber}<br><p>Wins: ${Season.numWins}<br>Season Level: ${Season.seasonLevel}<br>Battle Pass Level: ${MaxTier}${Season.bookLevel}</p></div> </div> </div>`;
         }
 
-        function GetStats() {
-            var stats = [];
-            { stats }
-            return stats;
-        }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const creationTime = 1670390152;
-            document.getElementById("timestamp").innerText = timeDifference(Date.now() / 1000, creationTime);
-            document.getElementById("timestamp").setAttribute(`data-bs-title`, `${unixTime(creationTime)}`);
-            UpdatePage(CosmeticType);
-        });
-
-        function UpdatePage(type) {
-            CosmeticType = type;
-            document.getElementById("content").innerHTML = "";
-            document.getElementById("Skins").setAttribute("class", "nav-link");
-            document.getElementById("Backblings").setAttribute("class", "nav-link");
-            document.getElementById("Pickaxes").setAttribute("class", "nav-link");
-            document.getElementById("Emotes").setAttribute("class", "nav-link");
-            document.getElementById("Wraps").setAttribute("class", "nav-link");
-            document.getElementById("Gliders").setAttribute("class", "nav-link");
-            document.getElementById("music").setAttribute("class", "nav-link");
-            document.getElementById("LoadingScreen").setAttribute("class", "nav-link");
-            document.getElementById("Stats").setAttribute("class", "nav-link");
+        async function GetInfo(file) {
+            console.log("Fetching Data")
 
 
-            document.getElementById(type).setAttribute("class", "nav-link active");
-            CreateSkinCards();
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-        }
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.headers = {
+                'content-disposition': 'attachment'
+            }
+            rawFile.onreadystatechange = function () {
+
+                if (rawFile.readyState === 4 && rawFile.status === 200 || rawFile.status == 0) {
+                    console.log(rawFile);
+
+                    var arrayBuffer = rawFile.responseText; // Note: not oReq.responseText
+
+                    var array = new Uint8Array([0x81, 0xA3, 0x66, 0x6F, 0x6F, 0xA3, 0x62, 0x61, 0x72]);
+
+
+
+                    // data = JSON.parse(rawFile.responseText);
+                    //document.getElementById("displayName").innerText = "Display Name: " + data["displayName"];
+                    //creationTime = data["createdTimestamp"];
+                    //document.getElementById("timestamp").innerText = timeDifference(Date.now() / 1000, creationTime);
+                    //document.getElementById("timestamp").setAttribute(`data-bs-title`, `${unixTime(creationTime)}`);
+
+                    //  data["stats"].forEach(season => {
+                    //    Stats.push(new Season(season["seasonNumber"], season["numWins"], season["seasonLevel"], season["bookLevel"], season["purchasedVIP"]));
+                    //  });
+                    //  UpdatePage(CosmeticType)
+
+                }
+                rawFile.send(null);
+            }
+
+
+            document.addEventListener("DOMContentLoaded", () => {
+                console.log("Loaded");
+                GetInfo(getParameterByName("file"));
+
+            });
+
+            function UpdatePage(type) {
+                CosmeticType = type;
+                document.getElementById("content").innerHTML = "";
+                document.getElementById("AthenaCharacter").setAttribute("class", "nav-link");
+                document.getElementById("AthenaBackpack").setAttribute("class", "nav-link");
+                document.getElementById("AthenaPickaxe").setAttribute("class", "nav-link");
+                document.getElementById("AthenaDance").setAttribute("class", "nav-link");
+                document.getElementById("AthenaItemWrap").setAttribute("class", "nav-link");
+                document.getElementById("AthenaGlider").setAttribute("class", "nav-link");
+                document.getElementById("AthenaMusicPack").setAttribute("class", "nav-link");
+                document.getElementById("AthenaLoadingScreen").setAttribute("class", "nav-link");
+                document.getElementById("Stats").setAttribute("class", "nav-link");
+
+
+                document.getElementById(type).setAttribute("class", "nav-link active");
+                CreateSkinCards();
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                })
+            }
 
     </script>
 
@@ -203,24 +225,23 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Pro Swapper Skin Checker</a>
+                <a class="navbar-brand">Pro Swapper Skin Checker</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                         aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a id="Skins" class="nav-link active" aria-current="page" href="#"
-                           onclick="UpdatePage('Skins')">Skins</a>
-                        <a id="Backblings" class="nav-link" href="#" onclick="UpdatePage('Backblings')">Backblings</a>
-                        <a id="Pickaxes" class="nav-link" href="#" onclick="UpdatePage('Pickaxes')">Pickaxes</a>
-                        <a id="Emotes" class="nav-link" href="#" onclick="UpdatePage('Emotes')">Emotes</a>
-                        <a id="Wraps" class="nav-link" href="#" onclick="UpdatePage('Wraps')">Wraps</a>
-                        <a id="Gliders" class="nav-link" href="#" onclick="UpdatePage('Gliders')">Gliders</a>
-                        <a id="music" class="nav-link" href="#" onclick="UpdatePage('music')">Music</a>
-                        <a id="LoadingScreen" class="nav-link" href="#" onclick="UpdatePage('LoadingScreen')">Loading
+                    <div class="navbar-nav" style="cursor:pointer">
+                        <a id="AthenaCharacter" class="nav-link" onclick="UpdatePage(this.id)">Skins</a>
+                        <a id="AthenaBackpack" class="nav-link" onclick="UpdatePage(this.id)">Backblings</a>
+                        <a id="AthenaPickaxe" class="nav-link" onclick="UpdatePage(this.id)">Pickaxes</a>
+                        <a id="AthenaDance" class="nav-link" onclick="UpdatePage(this.id)">Emotes</a>
+                        <a id="AthenaItemWrap" class="nav-link" onclick="UpdatePage(this.id)">Wraps</a>
+                        <a id="AthenaGlider" class="nav-link" onclick="UpdatePage(this.id)">Gliders</a>
+                        <a id="AthenaMusicPack" class="nav-link" onclick="UpdatePage(this.id)">Music</a>
+                        <a id="AthenaLoadingScreen" class="nav-link" onclick="UpdatePage(this.id)">Loading
                             Screens</a>
-                        <a id="Stats" class="nav-link" href="#" onclick="UpdatePage('Stats')">Stats</a>
+                        <a id="Stats" class="nav-link" onclick="UpdatePage('Stats')">Stats</a>
                     </div>
                 </div>
             </div>
@@ -230,7 +251,7 @@
                   data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="a">0 day(s)</span> any changes
             to this account after this date are not shown here.</span><br>
 
-        <span class="text-white">Display Name: {DisplayName}</span>
+        <span id="displayName" class="text-white"></span>
         <div class="container-fluid text-center">
             <div id="content" class="row"></div>
         </div>

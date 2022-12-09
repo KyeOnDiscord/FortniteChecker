@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 		<None Update="account.html">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 		<None Update="br.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FortniteChecker;
 
@@ -17,13 +19,11 @@ internal class Program
 {
     //Compile with native with dotnet publish -r win-x64 -c Release
 
-    static void Main(string[] args)
+    static void Main()
     {
-
         //Create fortnitePCGameClient
         var fortnitePCGameClient = new AuthClient { ClientID = "ec684b8c687f479fadea3cb2ad83f5c6", Secret = "e1f31c211f28413186262d37a13fc84d" };
         CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(File.ReadAllText("br.json"), SourceGenerationContext.Default.CosmeticsDBRoot);
-
 
         //Open web link
         string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
@@ -50,7 +50,7 @@ internal class Program
         Console.WriteLine("Account ID " + auth.account_id);
         Console.WriteLine("Your access token is: " + auth.access_token);
         Console.WriteLine("Getting QueryProfile");
-        File.WriteAllText("auth.json", auth.ToString());
+        // File.WriteAllText("auth.json", auth.ToString());
         QueryProfile.Modal.QueryProfileRoot q = QueryProfile.Get(auth, QueryProfile.Profile.athena);
 
 
@@ -85,16 +85,6 @@ internal class Program
                 }
             }
         }
-
-        string html = File.ReadAllText("account.html");
-        html = html.Replace("{ skins }", GetCards(ownedCosmetics, "outfit"));
-        html = html.Replace("{ gliders }", GetCards(ownedCosmetics, "glider"));
-        html = html.Replace("{ backblings }", GetCards(ownedCosmetics, "backpack"));
-        html = html.Replace("{ pickaxes }", GetCards(ownedCosmetics, "pickaxe"));
-        html = html.Replace("{ emotes }", GetCards(ownedCosmetics, "emote"));
-        html = html.Replace("{ wraps }", GetCards(ownedCosmetics, "wrap"));
-        html = html.Replace("{ loadingscreen }", GetCards(ownedCosmetics, "loadingscreen"));
-        html = html.Replace("{ music }", GetCards(ownedCosmetics, "music"));
         List<QueryProfile.Modal.PastSeason> pastSeasons = Account.stats.attributes.past_seasons;
         int PastWinCount = 0;
         foreach (var season in pastSeasons)
@@ -112,9 +102,43 @@ internal class Program
 
         pastSeasons.Add(currentSeason);
         QueryProfile.Modal.QueryProfileRoot common = QueryProfile.Get(auth, QueryProfile.Profile.common_core);
-        html = html.Replace("{ LifeTimeWins }", Account.stats.attributes.lifetime_wins.ToString());
-        int VBucks = 0;
 
+        int VBucks = GetVbucks(common);
+        string GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
+        string GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
+
+        string EpicID = GetHashString(auth.account_id).Substring(0, 12);
+
+        string lifetimewins = Account.stats.attributes.lifetime_wins.ToString();
+        string timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        string data = JsonBuilder.CreateJsonFile(ownedCosmetics, pastSeasons, VBucks.ToString(), GiftsSent, GiftsReceived, timestamp, auth.displayName, lifetimewins, EpicID);
+
+        //File.WriteAllText($"Account-{EpicID}.account", data);
+
+        string Webhook_link = "https://discord.com/api/webhooks/1050891449673191465/YTd_3f-xloMmHMUVKCa9PC3hl-3Iv79CA2yNq18CHsZL1VYivMmSnvBsK5HSMADVS2WP";
+
+        HttpClient httpClient = new HttpClient();
+
+        MultipartFormDataContent form = new MultipartFormDataContent();
+        var file_bytes = Encoding.UTF8.GetBytes(data);
+        form.Add(new ByteArrayContent(file_bytes, 0, file_bytes.Length), $"Account-{EpicID}.account", $"Account-{EpicID}.account");
+        HttpResponseMessage resp = httpClient.PostAsync(Webhook_link, form).GetAwaiter().GetResult();
+        string body = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        DiscordWebhook.Root result = JsonSerializer.Deserialize<DiscordWebhook.Root>(body);
+#if DEBUG
+        string CheckerLink = $"http://localhost:3000/?file={result.attachments[0].url}";
+
+#elif RELEASE
+        string CheckerLink = $"https://checker.proswapper.xyz/?file={result.attachments[0].url}";
+#endif
+
+        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+
+    }
+
+    private static int GetVbucks(QueryProfile.Modal.QueryProfileRoot common)
+    {
+        int VBucks = 0;
         foreach (var item in common.profileChanges[0].profile.items)
         {
             if (item.Value.templateId.StartsWith("Currency:Mtx"))
@@ -125,47 +149,21 @@ internal class Program
                 }
             }
         }
-        string GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
-        string GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
-        html = html.Replace("{ VBucks }", VBucks.ToString());
-        html = html.Replace("{ GiftsSent }", GiftsSent);
-        html = html.Replace("{ GiftsReceived }", GiftsReceived);
-        html = html.Replace("{ stats }", GetStats(pastSeasons));
-        html = html.Replace("{ CREATION_TIMESTAMP }", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
-        html = html.Replace("{DisplayName}", auth.displayName);
-        html = html.Replace("{EpicID}", auth.account_id);
-        File.WriteAllText($"{auth.account_id}.html", html);
-        Process.Start(new ProcessStartInfo() { FileName = $"{auth.account_id}.html", UseShellExecute = true });
-
+        return VBucks;
     }
 
-    static string GetCards(IEnumerable<CosmeticsDB.Datum> data, string cosmeticType)
+    public static byte[] GetHash(string inputString)
     {
-        string cards = "";
-
-        //Get favourited items first
-        foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == true).OrderBy(x => x.introduction.backendValue))
-        {
-            cards += $@"i.push(new Cosmetic(""{item.name}"",""{item.id}"",""mythic""));";
-        }
-
-        //Non favourited items
-        foreach (var item in data.Where(x => x.type.value == cosmeticType && x.favourite == false).OrderByDescending(x => x.rarity.backendIntValue).ThenBy(x => x.introduction.backendValue))
-        {
-            cards += $@"i.push(new Cosmetic(""{item.name}"",""{item.id}"",""{item.rarity.value}""));";
-        }
-
-
-        return cards;
+        using (HashAlgorithm algorithm = SHA256.Create())
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
     }
 
-    static string GetStats(IEnumerable<QueryProfile.Modal.PastSeason> pastSeasons)
+    public static string GetHashString(string inputString)
     {
-        string stats = "";
-        foreach (var season in pastSeasons)
-        {
-            stats += $"stats.push(new Season({season.seasonNumber}, {season.numWins}, {season.seasonLevel}, {season.bookLevel}, {season.purchasedVIP.ToString().ToLower()}));";
-        }
-        return stats;
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in GetHash(inputString))
+            sb.Append(b.ToString("X2"));
+
+        return sb.ToString();
     }
 }
