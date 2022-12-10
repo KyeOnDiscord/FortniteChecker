@@ -36,6 +36,19 @@ internal class JsonBuilder
             sb.Append($"\"id\":\"{item.id}\",");
             sb.Append($"\"type\":\"{item.type.backendValue}\",");
             sb.Append($"\"rarity\":\"mythic\"");
+            if (item.OwnedVariant.Count > 0)
+            {
+                sb.Append($",\"variants\":[");
+                foreach (var variant in item.OwnedVariant)
+                {
+                    sb.Append("{");
+                    sb.Append($"\"Stage\":\"{variant.Stage}\",");
+                    sb.Append($"\"Channel\":\"{variant.Channel}\"");
+                    sb.Append("},");
+                }
+                sb.Remove(sb.Length - 1, 1);
+                sb.Append("]");
+            }
 
             sb.Append("},");
         }
@@ -49,6 +62,20 @@ internal class JsonBuilder
             sb.Append($"\"type\":\"{item.type.backendValue}\",");
             sb.Append($"\"rarity\":\"{item.rarity.value}\"");
 
+            if (item.OwnedVariant.Count > 0)
+            {
+                sb.Append($",\"variants\":[");
+                foreach (var variant in item.OwnedVariant)
+                {
+                    sb.Append("{");
+                    sb.Append($"\"Stage\":\"{variant.Stage}\",");
+                    sb.Append($"\"Channel\":\"{variant.Channel}\"");
+                    sb.Append("},");
+                }
+                sb.Remove(sb.Length - 1, 1);
+                sb.Append("]");
+            }
+
             sb.Append("},");
         }
 
@@ -56,6 +83,7 @@ internal class JsonBuilder
         sb.Append("]");
         return sb.ToString();
     }
+
 
     public static string BuildStats(List<QueryProfile.Modal.PastSeason> stats)
     {

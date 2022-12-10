@@ -37,6 +37,7 @@ internal static class QueryProfile
 
     internal sealed class Modal
     {
+
         internal sealed class QueryProfileRoot
         {
             public int profileRevision { get; set; }
@@ -102,6 +103,15 @@ internal static class QueryProfile
             //public int numLowBracket { get; set; }
         }
 
+
+        public class QVariant
+        {
+            public string channel { get; set; }
+            public string active { get; set; }
+            public string[] owned { get; set; }
+        }
+
+
         internal class Attributes
         {
             //athena
@@ -133,6 +143,9 @@ internal static class QueryProfile
             public DateTime last_match_end_datetime { get; set; }
             public string platform { get; set; }
 
+
+            //skin attributes
+            public QVariant[] variants { get; set; }
 
 
             //common_core

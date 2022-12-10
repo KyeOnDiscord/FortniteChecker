@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace FortniteChecker;
 
@@ -18,16 +19,12 @@ internal partial class SourceGenerationContext : JsonSerializerContext
 internal class Program
 {
     //Compile with native with dotnet publish -r win-x64 -c Release
-
     static void Main()
     {
         HttpClient httpClient = new HttpClient();
+
         //Create fortnitePCGameClient
         var fortnitePCGameClient = new AuthClient { ClientID = "ec684b8c687f479fadea3cb2ad83f5c6", Secret = "e1f31c211f28413186262d37a13fc84d" };
-        Console.WriteLine("Fetching all Fortnite cosmetics");
-        string AllCosmetics = httpClient.GetStringAsync("https://fortnite-api.com/v2/cosmetics/br/").GetAwaiter().GetResult();
-        CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(AllCosmetics, SourceGenerationContext.Default.CosmeticsDBRoot);
-        Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
 
         //Open web link
         string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
@@ -61,6 +58,11 @@ internal class Program
 
 
         var Account = q.profileChanges[0].profile;
+        Console.WriteLine("Fetching all Fortnite cosmetics");
+        string AllCosmetics = httpClient.GetStringAsync("https://fortnite-api.com/v2/cosmetics/br/").GetAwaiter().GetResult();
+        CosmeticsDB.CosmeticsDBRoot cosmetics = JsonSerializer.Deserialize(AllCosmetics, SourceGenerationContext.Default.CosmeticsDBRoot);
+        Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
+
         List<CosmeticsDB.Datum> ownedCosmetics = new();
         string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack", "AthenaSkyDiveContrail", "AthenaSpray" };
         foreach (var item in Account.items)
@@ -85,6 +87,24 @@ internal class Program
                 }
                 cosmetic.rarity.backendIntValue = Rarity.RarityToInt(cosmetic.rarity.value);
                 ownedCosmetics.Add(cosmetic);
+
+                if (item.Value.attributes.variants != null)
+                {
+                    foreach (var variant in item.Value.attributes.variants)
+                    {
+                        foreach (string stage in variant.owned)
+                        {
+                            string StageName = stage;
+                            if (stage.Contains("."))
+                                StageName = stage.Split('.')[1]; //For something like JerseyColor.011 to 011
+
+                            if (StageName.Length == 32 || StageName == "RichColor") //If the stage name is something like RichColor.3DBD24153DC7D31D000000003F800000 which fortnite-api doesn't support
+                                continue;
+
+                            cosmetic.OwnedVariant.Add(new OwnedVariant(StageName, variant.channel));
+                        }
+                    }
+                }
                 if (item.Value.attributes.favorite)
                 {
                     cosmetic.favourite = true;
@@ -119,27 +139,26 @@ internal class Program
         string timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
         string data = JsonBuilder.CreateJsonFile(ownedCosmetics, pastSeasons, VBucks.ToString(), GiftsSent, GiftsReceived, timestamp, auth.displayName, lifetimewins, EpicID);
 
-        //File.WriteAllText($"Account-{EpicID}.account", data);
-
-        string Webhook_link = "https://discord.com/api/webhooks/1050891449673191465/YTd_3f-xloMmHMUVKCa9PC3hl-3Iv79CA2yNq18CHsZL1VYivMmSnvBsK5HSMADVS2WP";
-
-
-
-        MultipartFormDataContent form = new MultipartFormDataContent();
-        var file_bytes = Encoding.UTF8.GetBytes(data);
-        form.Add(new ByteArrayContent(file_bytes, 0, file_bytes.Length), $"Account-{EpicID}.account", $"Account-{EpicID}.account");
-        HttpResponseMessage resp = httpClient.PostAsync(Webhook_link, form).GetAwaiter().GetResult();
-        string body = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-        DiscordWebhook.Root result = JsonSerializer.Deserialize<DiscordWebhook.Root>(body);
+        HttpContent content = new StringContent(data, Encoding.UTF8, "text/json");
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 #if DEBUG
-        string CheckerLink = $"http://localhost:3000/?file={result.attachments[0].url}";
 
-#elif RELEASE
-        string CheckerLink = $"https://checker.proswapper.xyz/?file={result.attachments[0].url}";
-        CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
+        HttpResponseMessage resp = httpClient.PostAsync("http://localhost:3000/file", content).GetAwaiter().GetResult();
+        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        string CheckerLink = $"http://localhost:3000/?file={messageID}";
+        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
 #endif
 
+#if RELEASE
+        HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
+        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+        string CheckerLink = $"https://checker.proswapper.xyz/?file={messageID}";
+        CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
         Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+#endif
+
+
 
     }
 

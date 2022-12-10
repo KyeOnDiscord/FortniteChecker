@@ -39,6 +39,7 @@ internal sealed class CosmeticsDB
         public string[] builtInEmoteIds { get; set; }
 
         public bool favourite { get; set; } //self defined
+        public List<OwnedVariant> OwnedVariant { get; set; } = new();// self defined
     }
 
     public sealed class Type
