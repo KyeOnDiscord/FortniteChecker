@@ -24,7 +24,7 @@ A Fortnite Skin Checker which exports your Fortnite Account into an interactive 
 
 - Highlighted cosmetics - Cosmetics you favourite 💖 on Fortnite are automatically at the top of the list with a different rarity background
 
-## [Showcase](https://checker.proswapper.xyz/?file=https://cdn.discordapp.com/attachments/1050891433130852442/1050909434030862417/Account-C0D0C8FF72D2.account)
+## [Showcase](https://checker.proswapper.xyz/?file=1051003716167290911)
 ![image](https://user-images.githubusercontent.com/36981621/206810546-d2d59494-e7b4-430d-9b02-558114a80184.jpg)
 ![image (1)](https://user-images.githubusercontent.com/36981621/206810631-23eccc43-1abb-48c9-bbcd-120617bf7e38.jpg)
 ![image (2)](https://user-images.githubusercontent.com/36981621/206810790-4d6f9861-094a-4b3f-9f39-0d9b84014334.jpg)
