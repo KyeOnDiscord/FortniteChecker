@@ -21,6 +21,12 @@ internal class Program
     //Compile with native with dotnet publish -r win-x64 -c Release
     static void Main()
     {
+        Console.Title = "Pro Swapper Fortnite Account Checker";
+        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.WriteLine("Pro Swapper Fortnite Account Checker");
+        Console.WriteLine("=====================================");
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Gray;
         HttpClient httpClient = new HttpClient();
 
         //Create fortnitePCGameClient
@@ -55,7 +61,6 @@ internal class Program
         // File.WriteAllText("auth.json", auth.ToString());
 #endif
         QueryProfile.Modal.QueryProfileRoot q = QueryProfile.Get(auth, QueryProfile.Profile.athena);
-
 
         var Account = q.profileChanges[0].profile;
         Console.WriteLine("Fetching all Fortnite cosmetics");
