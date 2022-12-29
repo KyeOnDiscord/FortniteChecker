@@ -135,8 +135,15 @@ internal class Program
         QueryProfile.Modal.QueryProfileRoot common = QueryProfile.Get(auth, QueryProfile.Profile.common_core);
 
         int VBucks = GetVbucks(common);
-        string GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
-        string GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
+        string GiftsSent = "";
+        string GiftsReceived = "";
+
+        if (common.profileChanges[0].profile.stats.attributes.gift_history != null)
+        {
+            GiftsSent = common.profileChanges[0].profile.stats.attributes.gift_history.num_sent.ToString();
+            GiftsReceived = common.profileChanges[0].profile.stats.attributes.gift_history.num_received.ToString();
+        }
+
 
         string EpicID = GetHashString(auth.account_id).Substring(0, 12);
 
@@ -146,22 +153,22 @@ internal class Program
 
         HttpContent content = new StringContent(data, Encoding.UTF8, "text/json");
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-#if DEBUG
+        //#if DEBUG
 
-        HttpResponseMessage resp = httpClient.PostAsync("http://localhost:3000/file", content).GetAwaiter().GetResult();
-        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-        string CheckerLink = $"http://localhost:3000/?file={messageID}";
-        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
-#endif
+        //        HttpResponseMessage resp = httpClient.PostAsync("http://localhost:3000/file", content).GetAwaiter().GetResult();
+        //        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        //        string CheckerLink = $"http://localhost:3000/?file={messageID}";
+        //        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+        //#endif
 
-#if RELEASE
+        //#if RELEASE
         HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
         string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
         string CheckerLink = $"https://checker.proswapper.xyz/?file={messageID}";
         CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
         Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
-#endif
+        //#endif
 
 
 

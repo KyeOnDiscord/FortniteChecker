@@ -8,16 +8,23 @@
 		<StartupObject>FortniteChecker.Program</StartupObject>
 		<PublishAot>true</PublishAot>
 		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-		<ApplicationIcon>Icon.ico</ApplicationIcon>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<Title>Fortnite Account Checker</Title>
-		<Company>Pro_Swapper</Company>
-		<PackageProjectUrl>https://github.com/KyeOnDiscord/FortniteChecker</PackageProjectUrl>
-		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>True</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="Icon.ico" />
+		<None Update="account.html">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="br.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
