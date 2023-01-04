@@ -135,8 +135,8 @@ internal class Program
         QueryProfile.Modal.QueryProfileRoot common = QueryProfile.Get(auth, QueryProfile.Profile.common_core);
 
         int VBucks = GetVbucks(common);
-        string GiftsSent = "";
-        string GiftsReceived = "";
+        string GiftsSent = "0";
+        string GiftsReceived = "0";
 
         if (common.profileChanges[0].profile.stats.attributes.gift_history != null)
         {
@@ -205,9 +205,5 @@ internal class Program
         return sb.ToString();
     }
 
-    public static string Base64Encode(string plainText)
-    {
-        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-        return System.Convert.ToBase64String(plainTextBytes);
-    }
+    public static string Base64Encode(string plainText) => Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
 }
