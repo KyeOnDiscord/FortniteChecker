@@ -27,7 +27,7 @@ internal static class QueryProfile
             string resp = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
 #if DEBUG
-            Console.WriteLine($"{response.StatusCode} | Received QueryProfile ({profile}), length: {resp.Length}");
+            Console.WriteLine($"{response.StatusCode} | Received QueryProfile ({profile}), {resp.Count().ToSize(MyExtension.SizeUnits.KB)}KB");
             File.WriteAllText($"{auth.account_id}_{profile}.json", resp);
 #endif
 
@@ -125,6 +125,7 @@ internal static class QueryProfile
             public DateTime last_xp_interaction { get; set; }
             public int rested_xp_golden_path_granted { get; set; }
             public int book_level { get; set; }
+            public bool book_purchased { get; set; } = false;
             public int season_num { get; set; }
             public int book_xp { get; set; }
             public Season season { get; set; }

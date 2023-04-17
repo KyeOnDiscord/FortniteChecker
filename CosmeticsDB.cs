@@ -112,3 +112,32 @@ internal sealed class CosmeticsDB
         public string unlockRequirements { get; set; }
     }
 }
+
+
+
+internal sealed class Banners
+{
+    public class Root
+    {
+        public int status { get; set; }
+        public Datum[] data { get; set; }
+    }
+
+    public class Datum
+    {
+        public string id { get; set; }
+        public string devName { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public object category { get; set; }
+        public bool fullUsageRights { get; set; }
+        public Images images { get; set; }
+    }
+
+    public class Images
+    {
+        public string smallIcon { get; set; }
+        public string icon { get; set; }
+    }
+
+}

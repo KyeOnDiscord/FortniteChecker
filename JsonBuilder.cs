@@ -5,13 +5,15 @@ namespace FortniteChecker;
 internal class JsonBuilder
 {
 
-    public static string CreateJsonFile(List<CosmeticsDB.Datum> cosmetics, List<QueryProfile.Modal.PastSeason> stats, string vbucks, string giftsSent, string giftsReceived, string createdTimestamp, string displayName, string LifeTimeWins, string EpicID)
+    public static string CreateJsonFile(List<CosmeticsDB.Datum> cosmetics, List<QueryProfile.Modal.PastSeason> stats, List<Banners.Datum> banners, string vbucks, string giftsSent, string giftsReceived, string createdTimestamp, string displayName, string LifeTimeWins, string EpicID)
     {
         StringBuilder sb = new StringBuilder();
         string cosmeticsList = BuildCosmetics(cosmetics);
         string statsList = BuildStats(stats);
+        string bannerList = BuildBanners(banners);
         sb.Append("{\"cosmetics\":" + cosmeticsList);
         sb.Append(",\"stats\":" + statsList);
+        sb.Append(",\"banners\":" + bannerList);
         sb.Append(",\"vbucks\":" + vbucks);
         sb.Append(",\"giftsSent\":" + giftsSent);
         sb.Append(",\"giftsReceived\":" + giftsReceived);
@@ -75,6 +77,27 @@ internal class JsonBuilder
                 sb.Remove(sb.Length - 1, 1);
                 sb.Append("]");
             }
+
+            sb.Append("},");
+        }
+
+        sb.Remove(sb.Length - 1, 1);
+        sb.Append("]");
+        return sb.ToString();
+    }
+
+    public static string BuildBanners(List<Banners.Datum> Banners)
+    {
+        //Convert cosmetics to json array with strings
+        StringBuilder sb = new StringBuilder();
+        sb.Append("[");
+
+        foreach (var banner in Banners)
+        {
+            sb.Append("{");
+            sb.Append($"\"name\":\"{banner.devName}\",");
+            sb.Append($"\"id\":\"{banner.id}\",");
+            sb.Append($"\"image\":\"{banner.images.smallIcon}\"");
 
             sb.Append("},");
         }
