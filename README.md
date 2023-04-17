@@ -18,13 +18,15 @@ A Fortnite Skin Checker which exports your Fortnite Account into an interactive 
 
 - Your IP - Your Fortnite account cosmetics are only downloaded on your IP and no other IP
 
-- View Skins, Backblings, Pickaxes, Emotes, Wraps, Gliders, Music, Loading Screens, Contrails, Sprays and previous season stats
+- View Skins, Backblings, Pickaxes, Emotes, Wraps, Gliders, Music, Loading Screens, Contrails, Sprays, Emojis, Toys and previous season stats
 
 - View V-Bucks amount, Lifetime wins, gifts sent and received
 
 - Highlighted cosmetics - Cosmetics you favourite 💖 on Fortnite are automatically at the top of the list with a different rarity background
 
-## [Showcase](https://checker.proswapper.xyz/?file=1051003716167290911)
-![image](https://user-images.githubusercontent.com/36981621/206810546-d2d59494-e7b4-430d-9b02-558114a80184.jpg)
-![image (1)](https://user-images.githubusercontent.com/36981621/206810631-23eccc43-1abb-48c9-bbcd-120617bf7e38.jpg)
-![image (2)](https://user-images.githubusercontent.com/36981621/206810790-4d6f9861-094a-4b3f-9f39-0d9b84014334.jpg)
+## [Showcase](https://checker.proswapper.xyz/?file=1097509715694583828)
+![image](https://user-images.githubusercontent.com/36981621/232632725-d69a3082-8afe-4e38-9dd0-efac33fca170.png)
+![image](https://user-images.githubusercontent.com/36981621/232632794-ee9be851-3806-46f9-9e67-ea309b89f3c1.png)
+![image](https://user-images.githubusercontent.com/36981621/232632815-40d3f945-a0b8-4860-95d3-627494925a09.png)
+![image](https://user-images.githubusercontent.com/36981621/232632846-547b4aad-8e85-4252-8366-2de1fcb7be5a.png)
+![image](https://user-images.githubusercontent.com/36981621/232632898-f66ac55b-eb3c-491c-857c-f1f1fd81b6fa.png)
