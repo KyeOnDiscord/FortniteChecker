@@ -1,29 +1,17 @@
 ﻿using System.Diagnostics;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net.Http.Headers;
 
 namespace FortniteChecker;
 
-//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation
-[JsonSourceGenerationOptions(WriteIndented = true)]
-[JsonSerializable(typeof(CosmeticsDB.CosmeticsDBRoot))]
-[JsonSerializable(typeof(Auth.Modal.AuthRoot))]
-[JsonSerializable(typeof(QueryProfile.Modal.QueryProfileRoot))]
-internal partial class SourceGenerationContext : JsonSerializerContext
-{
-}
-
 internal class Program
 {
-    //Compile with native with dotnet publish -r win-x64 -c Release
     static void Main()
     {
-        Console.Title = "Pro Swapper Fortnite Account Checker";
+        Console.Title = "Kye's Fortnite Account Checker";
         Console.ForegroundColor = ConsoleColor.DarkBlue;
-        Console.WriteLine("Pro Swapper Fortnite Account Checker");
+        Console.WriteLine("Kye's Fortnite Account Checker");
         Console.WriteLine("=====================================");
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Gray;

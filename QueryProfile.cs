@@ -31,7 +31,7 @@ internal static class QueryProfile
             File.WriteAllText($"{auth.account_id}_{profile}.json", resp);
 #endif
 
-            return JsonSerializer.Deserialize(resp, SourceGenerationContext.Default.QueryProfileRoot);
+            return JsonSerializer.Deserialize<Modal.QueryProfileRoot>(resp);
         }
     }
 

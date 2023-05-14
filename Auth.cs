@@ -16,7 +16,7 @@ namespace FortniteChecker
                 });
                 var response = http.PostAsync("https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token", content).GetAwaiter().GetResult();
                 string resp = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                return JsonSerializer.Deserialize(resp, SourceGenerationContext.Default.AuthRoot);
+                return JsonSerializer.Deserialize<Modal.AuthRoot>(resp);
             }
         }
 
