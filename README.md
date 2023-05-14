@@ -12,6 +12,8 @@
 
 A Fortnite Skin Checker which exports your Fortnite Account into an interactive website.
 
+The Fortnite Account checker requires .NET 6 to be installed on your computer. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.16-windows-x64-installer).
+
 ## Features
 
 - Website is viewable on any device including mobile
