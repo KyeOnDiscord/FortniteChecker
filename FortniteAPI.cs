@@ -1,5 +1,4 @@
-﻿using MessagePack;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace FortniteChecker;
 
@@ -13,11 +12,9 @@ internal static class FortniteAPI
         HttpResponseMessage resp = httpClient.GetAsync(Endpoints.FortniteAPIURL).GetAwaiter().GetResult();
         if (resp.IsSuccessStatusCode)
         {
-            byte[] buffer = resp.Content.ReadAsByteArrayAsync().Result;
+            string buffer = resp.Content.ReadAsString.Result;
             Console.WriteLine("Decompressing cosmetics, " + buffer.LongLength.ToSize(MyExtension.SizeUnits.MB) + "MB");
-            var lz4Options = MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray).WithSecurity(MessagePackSecurity.UntrustedData);
-            string json = MessagePackSerializer.ConvertToJson(buffer, lz4Options);
-            var cosmetics = JsonSerializer.Deserialize<CosmeticsDB.CosmeticsDBRoot>(json);
+            var cosmetics = JsonSerializer.Deserialize<CosmeticsDB.CosmeticsDBRoot>(buffer);
             Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
             return cosmetics;
         }
