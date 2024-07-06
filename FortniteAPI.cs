@@ -12,8 +12,7 @@ internal static class FortniteAPI
         HttpResponseMessage resp = httpClient.GetAsync(Endpoints.FortniteAPIURL).GetAwaiter().GetResult();
         if (resp.IsSuccessStatusCode)
         {
-            string buffer = resp.Content.ReadAsString.Result;
-            Console.WriteLine("Decompressing cosmetics, " + buffer.LongLength.ToSize(MyExtension.SizeUnits.MB) + "MB");
+            string buffer = resp.Content.ReadAsStringAsync().Result;
             var cosmetics = JsonSerializer.Deserialize<CosmeticsDB.CosmeticsDBRoot>(buffer);
             Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
             return cosmetics;
@@ -33,11 +32,8 @@ internal static class FortniteAPI
         HttpResponseMessage resp = httpClient.GetAsync(Endpoints.Banners).GetAwaiter().GetResult();
         if (resp.IsSuccessStatusCode)
         {
-            byte[] buffer = resp.Content.ReadAsByteArrayAsync().Result;
-            Console.WriteLine("Decompressing banners, " + buffer.LongLength.ToSize(MyExtension.SizeUnits.MB) + "MB");
-            var lz4Options = MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray).WithSecurity(MessagePackSecurity.UntrustedData);
-            string json = MessagePackSerializer.ConvertToJson(buffer, lz4Options);
-            var cosmetics = JsonSerializer.Deserialize<Banners.Root>(json);
+            string buffer = resp.Content.ReadAsStringAsync().Result;
+            var cosmetics = JsonSerializer.Deserialize<Banners.Root>(buffer);
             Console.WriteLine("Fetched all banners, count: " + cosmetics.data.Length);
             return cosmetics;
         }
