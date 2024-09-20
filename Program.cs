@@ -2,7 +2,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Net.Http.Headers;
-
 namespace FortniteChecker;
 
 internal class Program
@@ -15,30 +14,23 @@ internal class Program
         Console.WriteLine("=====================================");
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Gray;
-        HttpClient httpClient = new HttpClient();
 
-
-        CosmeticsDB.CosmeticsDBRoot cosmetics = FortniteAPI.GetAllCosmetics();
-        Banners.Root banners = FortniteAPI.GetBanners();
-
-
-
-        //Create fortnitePCGameClient
-        var fortnitePCGameClient = new AuthClient { ClientID = "ec684b8c687f479fadea3cb2ad83f5c6", Secret = "e1f31c211f28413186262d37a13fc84d" };
+        CosmeticsDB.CosmeticsDBRoot cosmetics = FortniteAPI.DownloadData<CosmeticsDB.CosmeticsDBRoot>(FortniteAPI_Endpoints.Cosmetics);
+        Banners.Root banners = FortniteAPI.DownloadData<Banners.Root>(FortniteAPI_Endpoints.Banners);
 
         //Open web link
-        string url = $"https://www.epicgames.com/id/api/redirect?clientId={fortnitePCGameClient.ClientID}&responseType=code";
+        string url = $"https://www.epicgames.com/id/api/redirect?clientId={AuthClients.fortnitePCGameClient.ClientID}&responseType=code";
         Console.WriteLine("Opening link " + url);
         Process.Start(new ProcessStartInfo() { FileName = url, UseShellExecute = true });
         Console.Write("Enter authorization code:");
-        string AuthCode = Console.ReadLine();
+        string? AuthCode = Console.ReadLine();
         if (string.IsNullOrEmpty(AuthCode))
         {
             Console.WriteLine("Invalid Auth Code");
             Console.ReadKey();
             return;
         }
-        var auth = Auth.GetAuth(fortnitePCGameClient, AuthCode);
+        var auth = Auth.GetAuth(AuthClients.fortnitePCGameClient, AuthCode);
 
         if (auth.access_token == null)
         {
@@ -162,20 +154,20 @@ internal class Program
 
         File.WriteAllText(Account._id, data);
 
-        HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
-        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-        string CheckerLink = $"http://localhost:3000/?file={messageID}";
-        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+        // HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
+        // string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        // string CheckerLink = $"http://localhost:3000/?file={messageID}";
+        // Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
 #endif
 
 
 #if RELEASE
-        HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
-        string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        // HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
+        // string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-        string CheckerLink = $"https://checker.proswapper.xyz/?file={messageID}";
-        CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
-        Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+        // string CheckerLink = $"https://checker.proswapper.xyz/?file={messageID}";
+        // CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
+        // Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
 #endif
 
 

@@ -1,46 +1,74 @@
 ﻿using System.Text.Json;
-
 namespace FortniteChecker;
 
 internal static class FortniteAPI
 {
-    internal static CosmeticsDB.CosmeticsDBRoot GetAllCosmetics()
-    {
-        Console.WriteLine("Fetching all Fortnite cosmetics");
 
-        using HttpClient httpClient = new HttpClient();
-        HttpResponseMessage resp = httpClient.GetAsync(Endpoints.FortniteAPIURL).GetAwaiter().GetResult();
+    internal static T DownloadData<T>(string URL)
+    {
+        HttpResponseMessage resp = HttpClientSingleton.Instance.GetAsync(URL).GetAwaiter().GetResult();
         if (resp.IsSuccessStatusCode)
         {
             string buffer = resp.Content.ReadAsStringAsync().Result;
-            var cosmetics = JsonSerializer.Deserialize<CosmeticsDB.CosmeticsDBRoot>(buffer);
-            Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
-            return cosmetics;
+            T? cosmetics = JsonSerializer.Deserialize<T?>(buffer);
+            if (cosmetics != null)
+                return cosmetics;
+            else
+                throw new Exception("Downloaded Cosmetics was null");
         }
         else
         {
-            Console.WriteLine($"Failed to get cosmetics from FortniteAPI, status code: {resp.StatusCode}");
-            return null;
+            string error = $"Failed to get cosmetics from FortniteAPI, status code: {resp.StatusCode}";
+            Console.WriteLine(error);
+            throw new Exception(error);
+        }
+    }
+
+    internal static CosmeticsDB.CosmeticsDBRoot GetAllCosmetics()
+    {
+        Console.WriteLine("Fetching all Fortnite cosmetics");
+        HttpResponseMessage resp = HttpClientSingleton.Instance.GetAsync(FortniteAPI_Endpoints.Cosmetics).GetAwaiter().GetResult();
+        if (resp.IsSuccessStatusCode)
+        {
+            string buffer = resp.Content.ReadAsStringAsync().Result;
+            CosmeticsDB.CosmeticsDBRoot? cosmetics = JsonSerializer.Deserialize<CosmeticsDB.CosmeticsDBRoot?>(buffer);
+            if (cosmetics != null)
+            {
+                Console.WriteLine("Fetched all cosmetics, count: " + cosmetics.data.Length);
+                return cosmetics;
+            }
+            else
+                throw new Exception("Downloaded Cosmetics was null");
+        }
+        else
+        {
+            string error = $"Failed to get cosmetics from FortniteAPI, status code: {resp.StatusCode}";
+            Console.WriteLine(error);
+            throw new Exception(error);
         }
     }
 
     internal static Banners.Root GetBanners()
     {
         Console.WriteLine("Fetching all banners");
-
-        using HttpClient httpClient = new HttpClient();
-        HttpResponseMessage resp = httpClient.GetAsync(Endpoints.Banners).GetAwaiter().GetResult();
+        HttpResponseMessage resp = HttpClientSingleton.Instance.GetAsync(FortniteAPI_Endpoints.Banners).GetAwaiter().GetResult();
         if (resp.IsSuccessStatusCode)
         {
             string buffer = resp.Content.ReadAsStringAsync().Result;
-            var cosmetics = JsonSerializer.Deserialize<Banners.Root>(buffer);
-            Console.WriteLine("Fetched all banners, count: " + cosmetics.data.Length);
-            return cosmetics;
+            Banners.Root? cosmetics = JsonSerializer.Deserialize<Banners.Root?>(buffer);
+            if (cosmetics != null)
+            {
+                Console.WriteLine("Fetched all banners, count: " + cosmetics.data.Length);
+                return cosmetics;
+            }
+            else
+                throw new Exception("Banners were null");
         }
         else
         {
-            Console.WriteLine($"Failed to get banners from FortniteAPI, status code: {resp.StatusCode}");
-            return null;
+            string error = $"Failed to get banners from FortniteAPI, status code: {resp.StatusCode}";
+            Console.WriteLine(error);
+            throw new Exception(error);
         }
     }
 }
