@@ -44,7 +44,7 @@ internal class Program
         var banners = bannersTask.Result;
         var cars = carsTask.Result;
         cosmetics.data.AddRange(cars.data);
-        Console.WriteLine("\nKye's Fortnite Account Checker (September 2024 Update)\n");
+        Console.WriteLine("\nKye's Fortnite Account Checker (September 2024 Update) | https://github.com/KyeOnDiscord\n");
         await Task.WhenAll(cosmeticsTask, bannersTask);
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("Press any key to open browser and authenticate your Epic Games account ...");

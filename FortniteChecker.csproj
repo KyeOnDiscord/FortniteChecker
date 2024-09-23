@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		<StartupObject>FortniteChecker.Program</StartupObject>
 		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+		<ApplicationIcon>icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -16,6 +17,11 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Optimize>False</Optimize>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Include="daily-character-discussion-ryo-yamada-v0-josw7tgn55ia1.ico" />
+	  <Content Include="icon.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="account.html">
