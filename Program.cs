@@ -1,22 +1,55 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using System.Linq;
 namespace FortniteChecker;
 
 internal class Program
 {
-    static void Main()
+    static async Task TypeMessageAsync(string message, int delay)
     {
-        Console.Title = "Kye's Fortnite Account Checker";
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
-        Console.WriteLine("Kye's Fortnite Account Checker");
-        Console.WriteLine("=====================================");
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Gray;
+        for (int i = 0; i < message.Length; i += 3)
+        {
+            // Get the next three characters (or fewer if at the end)
+            string chunk = message.Substring(i, Math.Min(3, message.Length - i));
 
-        CosmeticsDB.CosmeticsDBRoot cosmetics = FortniteAPI.DownloadData<CosmeticsDB.CosmeticsDBRoot>(FortniteAPI_Endpoints.Cosmetics);
-        Banners.Root banners = FortniteAPI.DownloadData<Banners.Root>(FortniteAPI_Endpoints.Banners);
+            Console.Write(chunk);
+            await Task.Delay(delay);
+        }
+    }
+
+    static async Task Main()
+    {
+        Task<CosmeticsDB.CosmeticsDBRoot> cosmeticsTask = FortniteAPI.DownloadDataAsync<CosmeticsDB.CosmeticsDBRoot>(FortniteAPI.Cosmetics);
+        Task<CosmeticsDB.CosmeticsDBRoot> carsTask = FortniteAPI.DownloadDataAsync<CosmeticsDB.CosmeticsDBRoot>(FortniteAPI.Cars);
+        Task<Banners.Root> bannersTask = FortniteAPI.DownloadDataAsync<Banners.Root>(FortniteAPI.Banners);
+
+
+
+        Console.Title = "Kye's Fortnite Account Checker";
+        Console.ForegroundColor = ConsoleColor.Green;
+        string asciiArt = @"
+ _____          _         _ _          ____ _               _             
+|  ___|__  _ __| |_ _ __ (_) |_ ___   / ___| |__   ___  ___| | _____ _ __ 
+| |_ / _ \| '__| __| '_ \| | __/ _ \ | |   | '_ \ / _ \/ __| |/ / _ \ '__|
+|  _| (_) | |  | |_| | | | | ||  __/ | |___| | | |  __/ (__|   <  __/ |   
+|_|  \___/|_|   \__|_| |_|_|\__\___|  \____|_| |_|\___|\___|_|\_\___|_|   
+";
+        await TypeMessageAsync(asciiArt, 2);
+        var cosmetics = cosmeticsTask.Result;
+        var banners = bannersTask.Result;
+        var cars = carsTask.Result;
+        cosmetics.data.AddRange(cars.data);
+        Console.WriteLine("\nKye's Fortnite Account Checker (September 2024 Update)\n");
+        await Task.WhenAll(cosmeticsTask, bannersTask);
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Press any key to open browser and authenticate your Epic Games account ...");
+        Console.ReadKey(); // Wait for user input
+        Console.ForegroundColor = ConsoleColor.Gray;
 
         //Open web link
         string url = $"https://www.epicgames.com/id/api/redirect?clientId={AuthClients.fortnitePCGameClient.ClientID}&responseType=code";
@@ -52,7 +85,7 @@ internal class Program
         var Account = q.profileChanges[0].profile;
 
         List<CosmeticsDB.Datum> ownedCosmetics = new();
-        string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack", "AthenaSkyDiveContrail" };
+        string[] CosmeticItemsToSearch = { "AthenaCharacter", "AthenaBackpack", "AthenaDance", "AthenaPickaxe", "AthenaGlider", "AthenaItemWrap", "AthenaLoadingScreen", "AthenaMusicPack", "AthenaSkyDiveContrail", "VehicleCosmetics_Body" };
         foreach (var item in Account.items)
         {
             string[] itemName = item.Value.templateId.Split(':');
@@ -146,32 +179,38 @@ internal class Program
 
         string lifetimewins = Account.stats.attributes.lifetime_wins.ToString();
         string timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        string data = JsonBuilder.CreateJsonFile(ownedCosmetics, pastSeasons, ActuallyOwnedBanners, VBucks.ToString(), GiftsSent, GiftsReceived, timestamp, auth.displayName, lifetimewins, EpicID);
+        var data = JsonBuilder.CreateJsonFile(ownedCosmetics, pastSeasons, ActuallyOwnedBanners, VBucks.ToString(), GiftsSent, GiftsReceived, timestamp, auth.displayName, lifetimewins, EpicID);
 
-        HttpContent content = new StringContent(data, Encoding.UTF8, "text/json");
-        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        try
+        {
+
+
 #if DEBUG
-
-        File.WriteAllText(Account._id, data);
-
-        // HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
-        // string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-        // string CheckerLink = $"http://localhost:3000/?file={messageID}";
-        // Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+            string web_url = "http://localhost:3000";
+#elif RELEASE
+            string web_url = "https://checker.proswapper.xyz";
 #endif
 
-
-#if RELEASE
-        // HttpResponseMessage resp = httpClient.PostAsync("https://checker.proswapper.xyz/file", content).GetAwaiter().GetResult();
-        // string messageID = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-        // string CheckerLink = $"https://checker.proswapper.xyz/?file={messageID}";
-        // CheckerLink = "https://link-to.net/86737/" + new Random().Next(0, 1000).ToString() + "/dynamic/?r=" + Base64Encode(CheckerLink);
-        // Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+            //Send the skin data to the database
+            HttpResponseMessage resp = HttpClientSingleton.Instance.PostAsJsonAsync(web_url + "/submit", data).GetAwaiter().GetResult();
+            if (resp.StatusCode == HttpStatusCode.OK)
+            {
+#if DEBUG
+                string CheckerLink = $"{web_url}/?bstid={EpicID}";
+#elif RELEASE
+                string CheckerLink = $"https://bstlar.com/1c/fnchecker?bstid={EpicID}";
 #endif
 
+                Console.WriteLine("Opening " + CheckerLink);
+                Process.Start(new ProcessStartInfo() { FileName = CheckerLink, UseShellExecute = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
 
-
+        Console.ReadKey();
     }
 
     private static int GetVbucks(QueryProfile.Modal.QueryProfileRoot common)

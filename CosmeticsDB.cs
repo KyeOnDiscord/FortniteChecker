@@ -6,7 +6,7 @@ internal sealed class CosmeticsDB
     public sealed class CosmeticsDBRoot
     {
         public int status { get; set; }
-        public Datum[] data { get; set; }
+        public List<Datum> data { get; set; }
     }
 
 
