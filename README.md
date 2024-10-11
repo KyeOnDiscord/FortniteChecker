@@ -26,7 +26,7 @@ The Fortnite Account checker requires .NET 6 to be installed on your computer. Y
 
 - Highlighted cosmetics - Cosmetics you favourite 💖 on Fortnite are automatically at the top of the list with a different rarity background
 
-## [Showcase](https://checker.proswapper.xyz/?file=1097509715694583828)
+## [🔗 Showcase](https://checker.proswapper.xyz/?bstid=C0D0C8FF72D2)
 ![image](https://user-images.githubusercontent.com/36981621/232632725-d69a3082-8afe-4e38-9dd0-efac33fca170.png)
 ![image](https://user-images.githubusercontent.com/36981621/232632794-ee9be851-3806-46f9-9e67-ea309b89f3c1.png)
 ![image](https://user-images.githubusercontent.com/36981621/232632815-40d3f945-a0b8-4860-95d3-627494925a09.png)
